@@ -47,6 +47,7 @@ class Workout:
 				for xset in subroutine.sets[ex]:
 
 					workout_summary += str(xset) + '\n'
+				workout_summary += '\n'
 
 		return workout_summary 
 

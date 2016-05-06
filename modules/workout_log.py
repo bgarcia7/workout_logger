@@ -83,57 +83,35 @@ def process(user, message):
 def extract_exercise(text):
 	""" Extracts reps, exercise and weight from text """
 
-	full_reg = r'(\d+) ?reps( of )?(.+)( at ?| ?@ ?)(\d+)'
-	no_weight_reg = r'(\d+) ?reps( of )?(.+)'
-	no_ex_reg = r'(\d+) ?rep(s)?( at ?| ?@ ?)(\d+)'
-	no_ex_weight_reg = r'(\d+) ?rep(s)?'
+	regexes = [
+			#=====[ rep regex ]=====
+			{'reg_str':r'(\d+) ?(reps)?(at ?|@ ?)?(of)?', 'match':1}, 
+			#=====[ exercise regex ]=====
+			{'reg_str':r'(\d+) ?reps( of )?(.+)( at ?| ?@ ?)(\d+)', 'match': 3}, 
+			#=====[ weight regex ]=====
+			{'reg_str': r'( at ?| ?@ ?)(\d+)', 'match': 2}]
+	
+	values = []
 
-	#=====[ Check if reps extracted ]=====
-	if re.search(full_reg, text):
-		
-		#=====[ Get matches ]=====
-		matches = re.search(full_reg, text)
+	#=====[ Search for each exercise parameter ]=====
+	for idx, reg in enumerate(regexes):
+		reg_str = reg['reg_str']
 
-		#=====[ Extract reps, exercise and weight ]=====
-		reps = matches.group(1)
-		exercise = matches.group(3)
-		weight = matches.group(5)
+		#=====[ Search for regext in string ]=====
+		if re.search(reg_str, text):
+			values.append(re.search(reg_str, text).group(reg['match']))
+		else:
 
-	elif re.search(no_ex_reg, text):
+			#=====[ Return None if no reps extracted ]=====
+			if idx == 0:
+				return None
 
-		#=====[ Get matches ]=====
-		matches = re.search(no_ex_reg, text)
+			values.append(None)
 
-		#=====[ Extract reps, exercise and weight ]=====
-		reps = matches.group(1)
-		weight = matches.group(4)
-		exercise = None
+	#=====[ Returns xSet object constructed from extracted reps, exercise, and weight ]=====
+	return xSet(values[1], values[2], values[0])
 
-	elif re.search(no_weight_reg, text):
-
-		#=====[ Get matches ]=====
-		matches = re.search(no_weight_reg, text)
-
-		#=====[ Extract reps, exercise and weight ]=====
-		reps = matches.group(1)
-		exercise = matches.group(3)
-		weight = None
-
-	elif re.search(no_ex_weight_reg, text):
-
-		#=====[ Get matches ]=====
-		matches = re.search(no_ex_weight_reg, text)
-
-		#=====[ Extract reps, exercise and weight ]=====
-		reps = matches.group(1)
-		weight = None
-		exercise = None
-
-	else:
-		return None
-
-	return xSet(exercise, weight, reps)
-
+	
 def end_workout(user, user_id, workout):
 
 	#=====[ Record current workout and end time. Update user ]=====

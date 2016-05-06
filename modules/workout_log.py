@@ -3,9 +3,9 @@ import datetime
 from responses import *
 import re
 import pickle
-from workout import Workout
-from subroutine import Subroutine
-from xset import xSet
+from classes.workout import Workout
+from classes.subroutine import Subroutine
+from classes.xset import xSet
 
 def start(user):
 	""" Initializes users workout fields """

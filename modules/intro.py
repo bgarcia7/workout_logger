@@ -6,7 +6,10 @@ def process(user, message):
 
 	user_id, text = ut.get_info(user, message)
 
-	user['status'] = 'idle'
+	#=====[ Set idle status for user ]=====
+	user.set_status('idle')
+
 	ut.send_response(WELCOME_MESSAGE, user_id)
 
-	ut.update({'user_id':user_id}, user)
+	#=====[ Update user in db ]=====
+	ut.update(user_id, user)

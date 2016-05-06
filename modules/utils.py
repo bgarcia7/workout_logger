@@ -1,6 +1,8 @@
 from pymongo import MongoClient
 import requests
 import json
+import pickle
+import datetime
 
 db_client = MongoClient()
 db = db_client['brandon_workout_db']
@@ -27,12 +29,31 @@ def send_response(message, user_id):
 	except Exception as e:
 		print e
 
-def update(to_update, updated_state):
-	users.update(to_update, updated_state)
+def update(user_id, user_obj):
+	""" Updates user object in mongodb """
+
+	users.update({"user_id":user_id}, {"user_id":user_id, "user_object":pickle.dumps(user_obj)})
+
 
 def get_info(user, message):
+	""" Returns user information """
 
-	user_id = user["user_id"]
 	text = message["text"].lower().strip()
 
-	return user_id, text
+	return user.get_id(), text
+
+
+def extract_obj_info(message_obj):
+	""" Extract data from message object """
+
+	#=====[ Extract user_id and timestamp for inserting into db ]=====
+	user_id = message_obj['sender']['id']	
+	timestamp = datetime.datetime.now()
+	
+	#=====[ Check if message is a standard message or postback (from template) ]=====
+	if 'message' in message_obj:
+		message = message_obj['message']
+	else:
+		message = {'text': message_obj['postback']['payload']}
+	
+	return (user_id, timestamp, message)

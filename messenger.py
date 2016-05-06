@@ -18,15 +18,21 @@ import sys
 import ast
 import datetime
 import sys
+import pickle
 
 from pymongo import MongoClient
 from nltk.corpus import stopwords
 
+sys.path.append('classes')
+from user_class import User
+
 sys.path.append('modules/')
 import intro
 import idle
-import workout
+import workout_log
 import command 
+import utils as ut
+
 
 #=====[ Access token ]=====
 token = 'EAAYWALshr2kBAIVdPVwKscuFZAGjdB2dJzFx1qd8JA3bMnDTaZCr0fH0avAlPfLv72yBFEVtSXgXICMGWXZCbHS97OgZA5Q4qF0xdZAFRs0CtQ5HpMGUuNZCHJoewtR5ZCdKZA0UdHGwR6FZAETigcCYOU1bPH6xH00yfgV7ZASpGhbgZDZD'
@@ -76,34 +82,28 @@ def process_message(message_obj):
 		Step 3: Formulate response 
 
 	"""
-	#=====[ Extract user_id and timestamp for inserting into db ]=====
-	user_id = message_obj['sender']['id']	
-	timestamp = datetime.datetime.now()
-	
-	#=====[ Check if message is a standard message or postback (from template) ]=====
-	if 'message' in message_obj:
-		message = message_obj['message']
-	else:
-		message = {'text': message_obj['postback']['payload']}
-	
+	user_id, timestamp, message = ut.extract_obj_info(message_obj)
+
 	#=====[ Find user in db ]=====
 	user = users.find_one({"user_id": user_id})
-	
+
 	#=====[ Add message to existing user database or add new user ]=====
-	
 	if not user:
+
 		#=====[ Create new user ]=====
-		user = {"user_id":user_id, "messages":[{"timestamp":timestamp, "message":message}],"workouts":[],
-		        "current_workout":None, "status": "intro"}
-		users.insert_one(user)
+		user = User(user_id)
+		users.insert_one({"user_id":user_id, "user_object": pickle.dumps(user)})
+	
 	else:
-		user['messages'].append({"timestamp":timestamp, "message":message})
-		users.update({"user_id":user_id}, user)
+		user = pickle.loads(user["user_object"])
+		
+	#=====[ Store message in user object ]=====
+	user.add_message(message)
 
 	#=====[ Formulates and sends response ]=====
 	respond(message, user)
 
-
+	# ut.update(user_id, user)
 
 def respond(message, user):
 	""" 
@@ -112,7 +112,7 @@ def respond(message, user):
 		Step 3: send appropriate response 
 	"""
 
-	status = user["status"]
+	status = user.status
 
 	if command.process(user, message):
 		return
@@ -124,8 +124,7 @@ def respond(message, user):
 		idle.process(user, message)
 
 	elif status == "workout":
-		workout.process(user, message)
-
+		workout_log.process(user, message)
 
 
 #=====[ Runs app on running server.py ]=====

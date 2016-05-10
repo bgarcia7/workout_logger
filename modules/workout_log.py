@@ -3,6 +3,8 @@ import datetime
 from responses import *
 import re
 import pickle
+import sys
+sys.path.append('classes/')
 from workout import Workout
 from subroutine import Subroutine
 from xset import xSet

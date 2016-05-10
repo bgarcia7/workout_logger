@@ -1,53 +1,85 @@
 import utils as ut
 import datetime 
-from responses import *
+from resources import *
 
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+command_list = ['list commands', 'sudo log: [suggestion]', 'list workouts','review last workout', 'review workout: [index]']
 
 def process(user, message):
 
 	user_id, text = ut.get_info(user, message)
-	triggers = ['what', 'how', 'when', 'get']
-	#=====[ Question or request for a stat ]=====
-	if any([trigger in text for trigger in triggers]):
-		# sample question: "what was the weight I did last time when I did bench press?"
-		# sample question: "how long ago did I do bench press?"
-		# sample question: ""
-		workouts = user["workouts"]
-		relevant_exercises = {}
-		for workout in reversed(workouts):
-			time = workout['start_time']
-			for exercise in workout["exercises"]:
-				if exercise["exercise"] in text:
-					ex_name =exercise['exercise']
-					if ex_name in relevant_exercises:
-						relevant_exercises[ex_name] += [exercise]
-					else:
-						relevant_exercises[ex_name] = [exercise]
 
-			if len(relevant_exercises) > 0:
-				break
 
-		if len(relevant_exercises) > 0:
+	#==========[ Command used to list all super commands for the workout logger ]==========#
+	#																				       #
+	#	usage: " list commands "									   					   #
+	#																					   #
+	########################################################################################
 
-			#=====[ Get last time exercise was performed ]=====
-			day = time.day
-			month = months[time.month - 1]
+	if 'list' in text and 'commands' in text:
 
-			response = 'On ' + str(month) + ' ' + str(day) + ' you did: \n\n'
+		ut.send_response('Here are a list of commands:\n\n' + '\n'.join(command_list), user_id)
 
-			for exercise in relevant_exercises:
-				print 'RELEVANT EXERCISES:', relevant_exercises
-				response += relevant_exercises[exercise][0]['exercise'] + ':\n'
-				for ex_set in relevant_exercises[exercise]:
-					response += str(ex_set['reps']) + ' reps'
-					if len(ex_set["weight"]) > 0:
-						response += " at " + str(ex_set["weight"])
-					response += '\n'
-				response += '\n'
-			ut.send_response(response, user_id)
 
-			return True
+	#=====[ Command used to log thoughts/improvements while using the workout logger ]=====#
+	#																				       #
+	#	usage: " sudo log: [suggestion to improve] "									   #
+	#																					   #
+	########################################################################################
 
-	return False
+	elif 'sudo' in text and 'log' in text and ':' in text:
+
+		with open('to_improve_log','a') as f:
+			f.write(text.split(':')[1].strip() + '\n\n')
+
+		ut.send_response(MESSAGE_LOGGED, user_id)
+
+
+	#=========================[ Command used list recent workouts ]========================#
+	#																				       #
+	#	usage: " list workouts "									   					   #
+	#																					   #
+	########################################################################################
+
+	elif 'list' in text and 'workouts' in text:
+
+		ut.send_response('\n'.join([str(idx + 1) + '. ' + str(workout) for idx, workout in enumerate(reversed(user.workouts))]), user_id)
+
+
+	#=====================[ Command used to review most recent workout ]===================#
+	#																				       #
+	#	usage: " review last workout "									   				   #
+	#																					   #
+	########################################################################################
+
+	elif 'review' in text and 'last' in text and 'workout' in text:
+
+		ut.send_response(user.workouts[-1].get_summary(), user_id)
+
+	
+	#==================[ Command used to review a particular workout ]=====================#
+	#																				       #
+	#	usage: " review workout: [index] "									   			   #
+	#																					   #
+	########################################################################################
+
+	elif 'review' in text and 'workout' in text and ':' in text:
+
+		try: 
 			
+			idx = int(text.split(':')[1].strip())
+
+			ut.send_response(user.workouts[-idx].get_summary(), user_id)
+
+		except Exception as e:
+			
+			print e
+
+	else:
+
+		return False
+
+	return True
+
+
+
+

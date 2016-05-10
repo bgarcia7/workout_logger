@@ -2,11 +2,12 @@ import datetime
 
 class xSet:
 
-	def __init__(self, exercise, weight, reps):
+	def __init__(self, exercise, weight, reps, note):
 		self.exercise = exercise
 		self.weight = weight
 		self.reps = reps
 		self.time = datetime.datetime.now()
+		self.note = note
 
 	def __str__(self):
 		""" Returns string representation of set """

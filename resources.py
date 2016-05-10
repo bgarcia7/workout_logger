@@ -5,3 +5,6 @@ DEFAULT_IDLE_MESSAGE = "That's interesting... just let me know when you're start
 END_WORKOUT_MESSAGE = "Nice! Workout finished: noted"
 RECORDED_WORKOUT_MESSAGE = "Exercise recorded. Now get the fuck off your phone."
 NO_EXERCISE_EXTRACTED_MESSAGE = "Could not figure out what exercise you did. Try again using the following: [x] reps of [exercise] at [weight]"
+MESSAGE_LOGGED = "Logged your message, boss"
+
+months = ['Jan','Feb','Mar','April','May','June','July','Aug','Sep','Oct','Nov','Dec']

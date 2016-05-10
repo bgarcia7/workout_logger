@@ -1,6 +1,6 @@
 import utils as ut
 import datetime
-from responses import *
+from resources import *
 import re
 import pickle
 import sys
@@ -84,34 +84,48 @@ def process(user, message):
 
 def extract_exercise(text):
 	""" Extracts reps, exercise and weight from text """
-
+	
 	regexes = [
 			#=====[ rep regex ]=====
-			{'reg_str':r'(\d+) ?(reps)?(at ?|@ ?)?(of)?', 'match':1}, 
+			[{'reg_str':r'(\d+) ?(reps)?(at ?|@ ?)?(of)?', 'match':1}], 
 			#=====[ exercise regex ]=====
-			{'reg_str':r'(\d+) ?reps( of )?(.+)( at ?| ?@ ?)(\d+)', 'match': 3}, 
+			[{'reg_str':r'(\d+) ?reps( of )?([^\d]+)( at ?| ?@ ?)(\d+)', 'match': 3}, 
+			 {'reg_str':r'(\d+) ?reps (of|at|@) ([^\d]+)', 'match': 3},
+			 {'reg_str':r'(\d+) ?((min(ute)?s?)|(sec(ond)?s?)|(h(ou)?rs?))( of )?([^\d]+)( at ?| ?@ ?)(\d+)', 'match':10},
+			 {'reg_str':r'(\d+) ?((min(ute)?s?)|(sec(ond)?s?)|(h(ou)?rs?)) ?(of|at|@) ?([^\d]+)', 'match':10}], 
 			#=====[ weight regex ]=====
-			{'reg_str': r'( at ?| ?@ ?)(\d+)', 'match': 2}]
-	
+			[{'reg_str': r'(at ?|@ ?|of ?)(\d+)', 'match': 2}],
+			#=====[ note regex ]=====
+			[{'reg_str': r'note:(.+)', 'match':1}]]
+
 	values = []
 
-	#=====[ Search for each exercise parameter ]=====
-	for idx, reg in enumerate(regexes):
-		reg_str = reg['reg_str']
+	#=====[ Search for each exercise parameters (weight, reps, exercise) ]=====
+	for idx, reg_array in enumerate(regexes):
 
-		#=====[ Search for regext in string ]=====
-		if re.search(reg_str, text):
-			values.append(re.search(reg_str, text).group(reg['match']))
-		else:
+		value_found = False
 
-			#=====[ Return None if no reps extracted ]=====
+		#=====[ Iterate through each regex for a particular parameter ]=====
+		for reg in reg_array:
+
+			reg_str = reg['reg_str']
+
+			#=====[ Search for regext in string ]=====
+			if re.search(reg_str, text):
+
+				value_found = True
+				values.append(re.search(reg_str, text).group(reg['match']))
+				break
+
+		#=====[ Return None if no reps extracted ]=====
+		if not value_found:
 			if idx == 0:
 				return None
 
 			values.append(None)
 
 	#=====[ Returns xSet object constructed from extracted reps, exercise, and weight ]=====
-	return xSet(values[1], values[2], values[0])
+	return xSet(values[1], values[2], values[0], values[3])
 
 	
 def end_workout(user, user_id, workout):

@@ -1,6 +1,7 @@
 import datetime
 import xset
 from subroutine import Subroutine
+from resources import months
 
 class Workout:
 
@@ -8,6 +9,9 @@ class Workout:
 		self.start_time = datetime.datetime.now()
 		self.curr_subroutine = None
 		self.subroutines = []
+
+	def __str__(self):
+		return str(months[self.start_time.month - 1] + ' ' + str(self.start_time.day) + ': [STATS]')
 
 	def get_start_time(self):
 		return self.start_time
@@ -47,7 +51,6 @@ class Workout:
 				for xset in subroutine.sets[ex]:
 
 					workout_summary += str(xset) + '\n'
-				workout_summary += '\n'
 
 				workout_summary += '\n'
 

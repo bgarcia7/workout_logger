@@ -11,6 +11,8 @@ class Workout:
 
 		# Workout Statistics
 		self.volume = None
+		self.num_sets = None
+		self.total_set_time = None
 
 	def get_start_time(self):
 		return self.start_time
@@ -75,31 +77,36 @@ class Workout:
 			total_volume += subroutine.get_volume()
 
 		self.volume = total_volume
-
 	
 	def get_volume(self):
-		""" calculate the total volume of the workout and set a cached copy """
+		""" return cached copy of workout volume """
 		return self.volume
 
-	def get_total_set_time(self):
-		""" get total time spent on sets in workout """
+	def calculate_total_set_time(self):
+		""" calculate total time spent on sets in workout """
 		total_time = 0
 
 		for subroutine in self.subroutines:
 			total_time += subroutine.get_total_set_time()
 
-		return total_time
+		self.total_set_time = total_time
 
-	def get_num_sets(self):
-		""" get total number of sets performed in workout """
+	def get_total_set_time(self):
+		return self.total_set_time
+
+	def calculate_num_sets(self):
+		""" calculate total number of sets performed in workout """
 		total_sets = 0
 
 		for subroutine in self.subroutines:
 			total_sets += subroutine.get_num_sets()
 
-		return total_sets
+		self.num_sets = total_sets
+
+	def get_num_sets(self):
+		return self.num_sets
 
 	def get_avg_set_time(self):
 		""" get the average time per set of a workout """
-		return self.get_total_set_time() * 1.0 / self.get_num_sets()
+		return self.total_set_time * 1.0 / self.num_sets
 

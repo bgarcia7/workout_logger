@@ -9,6 +9,7 @@ class xSet:
 		self.time = datetime.datetime.now()
 		self.note = note
 
+
 	def __str__(self):
 		""" Returns string representation of set """
 
@@ -19,3 +20,8 @@ class xSet:
 
 	def __eq__(self, other):
 		return (self.exercise, self.weight, self.reps) == (other.exercise, other.weight, other.reps)
+
+
+	def get_volume(self):
+		#=====[ Return weight x reps or 0 if exercise doesn't have weight ]=====
+		return self.weight * self.reps if self.weight else 0

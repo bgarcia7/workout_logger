@@ -15,7 +15,7 @@ class Subroutine:
 		self.exercises = exercises
 		self.sets = defaultdict(list)
 		self.num_sets = 0
-		self.curr_exercise = exercises[0]
+		self.curr_exercise = None
 
 	def add_set(self, xset):
 		""" Adds set of exercise to subroutine """
@@ -69,11 +69,11 @@ class Subroutine:
 		return exercise in self.exercises
 
 
-	def getVolume(self):
+	def get_volume(self):
 		total_volume = 0
 
-		for set_list in self.sets:
+		for set_list in self.sets.values():
 			for xset in set_list:
-				total_volume += xset.getVolume()
+				total_volume += xset.get_volume()
 
 		return total_volume

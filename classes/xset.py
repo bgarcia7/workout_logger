@@ -21,5 +21,5 @@ class xSet:
 		return (self.exercise, self.weight, self.reps) == (other.exercise, other.weight, other.reps)
 
 
-	def getVolume(self):
+	def get_volume(self):
 		return self.weight * self.reps

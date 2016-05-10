@@ -9,6 +9,9 @@ class Workout:
 		self.curr_subroutine = None
 		self.subroutines = []
 
+		# Workout Statistics
+		self.volume = None
+
 	def get_start_time(self):
 		return self.start_time
 
@@ -61,3 +64,20 @@ class Workout:
 			new_subroutine.add_set(curr_set)
 		
 		self.curr_subroutine = new_subroutine
+
+	# Workout Statistics
+
+	def calculate_volume(self):
+		""" calculate the total volume of the workout and set a cached copy """
+		total_volume = 0
+
+		for subroutine in self.subroutines:
+			total_volume += subroutine.get_volume()
+
+		self.volume = total_volume
+
+	
+	def get_volume(self):
+		""" calculate the total volume of the workout and set a cached copy """
+		return self.volume
+

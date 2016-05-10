@@ -32,6 +32,7 @@ import idle
 import workout_log
 import command 
 import utils as ut
+from database import users 
 
 
 #=====[ Access token ]=====
@@ -40,14 +41,6 @@ os.system('curl -ik -X POST "https://graph.facebook.com/v2.6/me/subscribed_apps?
 
 #=====[ Set up Redis server ]=====
 redis_conn = redis.StrictRedis(host='localhost', port=6379)
-
-#=====[ Set up Mongo DB ]=====
-db_client = MongoClient()
-
-db = db_client['brandon_workout_db']
-users = db['users']
-users.remove()
-users = db['users']
 
 def run():
 	""" Continually pings redis to process any and all queued messages """

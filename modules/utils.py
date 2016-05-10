@@ -3,10 +3,7 @@ import requests
 import json
 import pickle
 import datetime
-
-db_client = MongoClient()
-db = db_client['brandon_workout_db']
-users = db['users']
+from database import users 
 
 token = 'EAAYWALshr2kBAIVdPVwKscuFZAGjdB2dJzFx1qd8JA3bMnDTaZCr0fH0avAlPfLv72yBFEVtSXgXICMGWXZCbHS97OgZA5Q4qF0xdZAFRs0CtQ5HpMGUuNZCHJoewtR5ZCdKZA0UdHGwR6FZAETigcCYOU1bPH6xH00yfgV7ZASpGhbgZDZD'
 

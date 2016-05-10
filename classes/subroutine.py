@@ -67,3 +67,13 @@ class Subroutine:
 
 	def has_exercise(self, exercise):
 		return exercise in self.exercises
+
+
+	def getVolume(self):
+		total_volume = 0
+
+		for set_list in self.sets:
+			for xset in set_list:
+				total_volume += xset.getVolume()
+
+		return total_volume

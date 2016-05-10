@@ -47,7 +47,7 @@ class Workout:
 
 		#=====[ iterate through each subroutine ]=====
 		for subroutine in self.subroutines:
-			print 'subroutine'
+
 			#=====[ Iterate through exercise in each subroutine ]=====
 			for ex in subroutine.exercises:
 
@@ -55,7 +55,6 @@ class Workout:
 
 				#=====[ Iterate through each set ]=====
 				for xset in subroutine.sets[ex]:
-					print 'SET'
 
 					workout_summary += str(xset) + '\n'
 

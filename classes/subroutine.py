@@ -15,7 +15,10 @@ class Subroutine:
 		self.exercises = exercises
 		self.sets = defaultdict(list)
 		self.num_sets = 0
-		self.curr_exercise = None
+		self.curr_exercise = exercises[0]
+
+	def __str__(self):
+		return str(self.get_flattened_sets())
 
 	def add_set(self, xset):
 		""" Adds set of exercise to subroutine """
@@ -26,11 +29,11 @@ class Subroutine:
 		if self.mode == "exercise":
 			
 			#=====[ If user only reported reps/weight, add exercise to set object ]=====
-			if not xset.exercise:
-				xset.exercise = self.curr_exercise
+			if not exercise:
+				exercise = self.curr_exercise
 			
 			#=====[ Add the exercise to the list of exercises ]=====
-			if not self.exercises:
+			if len(self.exercises) < 1:
 				self.exercises.append(xset.exercise)
 
 			self.sets[exercise].append(xset)

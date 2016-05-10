@@ -57,7 +57,7 @@ def process(user, message):
 		if curr_set:
 
 			curr_subroutine = workout.curr_subroutine
-
+				
 			if curr_subroutine and (not curr_set.exercise or curr_subroutine.has_exercise(curr_set.exercise)):
 			#=====[ If we're in the middle of an existing subroutine ]=====
 

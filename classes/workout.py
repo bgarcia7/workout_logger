@@ -81,3 +81,25 @@ class Workout:
 		""" calculate the total volume of the workout and set a cached copy """
 		return self.volume
 
+	def get_total_set_time(self):
+		""" get total time spent on sets in workout """
+		total_time = 0
+
+		for subroutine in self.subroutines:
+			total_time += subroutine.get_total_set_time()
+
+		return total_time
+
+	def get_num_sets(self):
+		""" get total number of sets performed in workout """
+		total_sets = 0
+
+		for subroutine in self.subroutines:
+			total_sets += subroutine.get_num_sets()
+
+		return total_sets
+
+	def get_avg_set_time(self):
+		""" get the average time per set of a workout """
+		return self.get_total_set_time() * 1.0 / self.get_num_sets()
+

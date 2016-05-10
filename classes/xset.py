@@ -14,4 +14,7 @@ class xSet:
 		string = 'Reps: ' + str(self.reps)
 		string += ' | Weight: ' + str(self.weight) if self.weight else ''
 
-		return string 
+		return string
+
+	def __eq__(self, other):
+		return (self.exercise, self.weight, self.reps) == (other.exercise, other.weight, other.reps)

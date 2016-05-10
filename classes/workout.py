@@ -49,6 +49,8 @@ class Workout:
 					workout_summary += str(xset) + '\n'
 				workout_summary += '\n'
 
+				workout_summary += '\n'
+
 		return workout_summary 
 
 	def new_subroutine(self, mode, exercises, curr_set=None):

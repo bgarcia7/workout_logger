@@ -72,7 +72,6 @@ class Subroutine:
 	def has_exercise(self, exercise):
 		return exercise in self.exercises
 
-
 	def get_volume(self):
 		total_volume = 0
 

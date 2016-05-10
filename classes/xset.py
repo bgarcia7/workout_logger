@@ -24,4 +24,4 @@ class xSet:
 
 	def get_volume(self):
 		#=====[ Return weight x reps or 0 if exercise doesn't have weight ]=====
-		return self.weight * self.reps if self.weight else 0
+		return int(self.weight) * int(self.reps) if self.weight else 0

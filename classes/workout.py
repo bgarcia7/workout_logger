@@ -47,6 +47,7 @@ class Workout:
 
 		#=====[ iterate through each subroutine ]=====
 		for subroutine in self.subroutines:
+			print 'subroutine'
 			#=====[ Iterate through exercise in each subroutine ]=====
 			for ex in subroutine.exercises:
 
@@ -54,10 +55,18 @@ class Workout:
 
 				#=====[ Iterate through each set ]=====
 				for xset in subroutine.sets[ex]:
+					print 'SET'
 
 					workout_summary += str(xset) + '\n'
 
 				workout_summary += '\n'
+
+		self.calculate_volume()
+		self.calculate_total_set_time()
+		self.calculate_num_sets()
+
+		workout_summary+= 'Volume: ' + str(self.volume) + '\n'
+		workout_summary += 'Avg. Set Time: ' + str(self.get_avg_set_time()) + '\n'
 
 		return workout_summary 
 

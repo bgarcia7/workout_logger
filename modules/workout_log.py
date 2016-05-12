@@ -17,6 +17,7 @@ def start(user):
 	#=====[ Start workout ]=====
 	user.status ="workout"
 	user.current_workout = Workout()
+	user.time = datetime.datetime.now()
 	ut.update(user_id, user)
 
 	ut.send_response(START_WORKOUT_MESSAGE, user_id)
@@ -79,8 +80,13 @@ def process(user, message):
 				workout.new_subroutine('exercise', [curr_set.exercise], curr_set)
 
 			user.current_workout = workout
+			
+			cur_time = datetime.datetime.now()
+			seconds_passed = int((cur_time - user.time).total_seconds())
+			ut.send_response(str(seconds_passed)+ " seconds since your last log", user_id)
+
+			user.time = cur_time
 			ut.update(user_id, user)
-			ut.send_response("Cool!", user_id)
 
 		#=====[ If no exercise extracted, notify user ]=====
 		else:

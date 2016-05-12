@@ -5,3 +5,7 @@ How to use: type 'sudo log: [text]' while using the workout logger:
 ############################################################################
 ############################################################################
 
+if no current routine/exercise, and no exercise extracted from string, confirm with user
+
+support see 'squats' and pull up all squats
+

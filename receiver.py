@@ -29,7 +29,7 @@ redis_conn = redis.StrictRedis(host='localhost', port=6379)
 
 @app.route("/receive_message",methods=['POST', 'GET'])
 def webhook():
-	""" Webhook used to receive message from a user messaging the Health Advisor FB page """
+	""" Webhook used to receive message from a user messaging the Workout Logger page """
 
 	resp = make_response('OK', 200)
 

@@ -2,7 +2,7 @@ import utils as ut
 import datetime 
 from resources import *
 
-command_list = ['list commands', 'sudo log: [suggestion]', 'list workouts','review last workout', 'review workout: [index]']
+command_list = ['list commands', 'sudo log: [suggestion]', 'list workouts','review last workout', 'review workout: [index]', 'review week']
 
 def process(user, message):
 
@@ -74,6 +74,22 @@ def process(user, message):
 		except Exception as e:
 			
 			print e
+
+	#=============[ Command used to review a weeks worth of workout stats ]================#
+	#																				       #
+	#	usage: " review week "									   			   #
+	#																					   #
+	########################################################################################
+
+	elif 'review' in text and 'week' in text:
+
+		info = 'Here\'s your week in review: \n\n'
+
+		info += 'Total Sets: ' + str(user.get_num_sets(7)) + '\n' 
+		info += 'Total Volume: ' + str(user.get_volume(7)) + '\n'
+		info += 'Avg. Set Time: ' + str(user.get_avg_set_time(7)) + '\n'
+
+		ut.send_response(info, user_id)
 
 	else:
 

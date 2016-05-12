@@ -16,7 +16,11 @@ class Workout:
 		self.total_set_time = None
 
 	def __str__(self):
-		return str(months[self.start_time.month - 1] + ' ' + str(self.start_time.day) + ': [STATS]')
+		try:
+			return str(months[self.start_time.month - 1] + ' ' + str(self.start_time.day) + ' | Sets: %d | Volume: %d' % (self.num_sets, self.volume))
+		except Exception as e:
+			print (e)
+			return 'Unable to get workout'
 
 	def get_start_time(self):
 		return self.start_time
@@ -39,6 +43,9 @@ class Workout:
 	def add_subroutine(self, subroutine):
 
 		self.subroutines.append(subroutine)
+
+	def add_set(self, xset):
+		self.curr_subroutine.add_set(xset)
 
 	def get_summary(self):
 		""" Returns string representation of workout summary """

@@ -3,28 +3,39 @@ import requests
 import json
 import pickle
 import datetime
-from database import users 
+from database import users
 
+PACKAGE_LENGTH = 300
 token = 'EAAYWALshr2kBAIVdPVwKscuFZAGjdB2dJzFx1qd8JA3bMnDTaZCr0fH0avAlPfLv72yBFEVtSXgXICMGWXZCbHS97OgZA5Q4qF0xdZAFRs0CtQ5HpMGUuNZCHJoewtR5ZCdKZA0UdHGwR6FZAETigcCYOU1bPH6xH00yfgV7ZASpGhbgZDZD'
 
 def send_response(message, user_id):
 	""" Constructs the request and sends a message to the user corresponding to the specified user id """
 
-	try:
-		#=====[ Data contains facebook specific json format ]=====
-		data = json.dumps({"recipient": {"id": user_id}, "message": {"text": message}})
+	#=====[ Checks to make sure more bytes to send ]=====
+	while len(message) > 0:
 
-		#=====[ URL is to a general facebook messenger bot endpoint + access_token ]=====
-		url = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + token 
+		try:			
+			#=====[ Checks if message needs to be split before sending ]=====
+			if len(message) <= PACKAGE_LENGTH:
+				to_send = message 
+				message = ''
+			else:
+				to_send, message = split_message(message)
 
-		#=====[ Construct headers ]=====
-		headers = {"Content-Type": "application/json"}
+			#=====[ Data contains facebook specific json format ]=====
+			data = json.dumps({"recipient": {"id": user_id}, "message": {"text": to_send}})
 
-		#=====[ Make request and get response ]=====
-		response = requests.post(url=url.strip(), data=data, headers=headers)
+			#=====[ URL is to a general facebook messenger bot endpoint + access_token ]=====
+			url = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + token 
 
-	except Exception as e:
-		print e
+			#=====[ Construct headers ]=====
+			headers = {"Content-Type": "application/json"}
+
+			#=====[ Make request and get response ]=====
+			response = requests.post(url=url.strip(), data=data, headers=headers)
+
+		except Exception as e:
+			print e
 
 def update(user_id, user_obj):
 	""" Updates user object in mongodb """
@@ -54,3 +65,24 @@ def extract_obj_info(message_obj):
 		message = {'text': message_obj['postback']['payload']}
 	
 	return (user_id, timestamp, message)
+
+def split_message(message):
+	""" Finds appropriate cutting point for sending message. Returns the message to send and remaining message """
+
+	to_send = message[:PACKAGE_LENGTH]
+	message = message[PACKAGE_LENGTH:]
+
+	#=====[ Check if newline character found ]=====
+	index = to_send.rfind('\n')
+	if index > 0:
+		message = to_send[index:] + message
+		to_send = to_send[:index]
+	else:
+
+		#=====[ If no newline found, check if space found ]=====
+		index = to_send.rfind(' ')
+		if index > 0:
+			message = to_send[index:] + message
+			to_send = to_send[:index]
+
+	return (to_send, message)

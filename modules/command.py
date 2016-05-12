@@ -53,7 +53,8 @@ def process(user, message):
 
 	elif 'review' in text and 'last' in text and 'workout' in text:
 
-		ut.send_response(user.workouts[-1].get_summary(), user_id)
+		workout_summary = user.workouts[-1].get_summary()
+		ut.send_response(workout_summary, user_id)
 
 	
 	#==================[ Command used to review a particular workout ]=====================#

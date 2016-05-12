@@ -29,8 +29,15 @@ def process(user, message):
 	#=====[ End Workout ]=====
 	if "end" in text and "workout" in text:
 
-		end_workout(user, user_id, workout)
+		#=====[ Record current workout and end time. Update user ]=====
+		workout.end()
+
+		ut.send_response(END_WORKOUT_MESSAGE, user_id)
 		ut.send_response(workout.get_summary(), user_id)
+
+		#=====[ After calling get_summary and updating workout stats, save workout ]=====
+		end_user_workout(user, user_id, workout)
+
 
 	#=====[ If starting a new circuit ]=====
 	elif "circuit" in text:
@@ -61,7 +68,7 @@ def process(user, message):
 			if curr_subroutine and (not curr_set.exercise or curr_subroutine.has_exercise(curr_set.exercise)):
 			#=====[ If we're in the middle of an existing subroutine ]=====
 
-				curr_subroutine.add_set(curr_set)
+				workout.add_set(curr_set)
 
 			#=====[ Beginning a new subroutine ]=====s
 			else:
@@ -72,7 +79,6 @@ def process(user, message):
 				workout.new_subroutine('exercise', [curr_set.exercise], curr_set)
 
 			user.current_workout = workout
-
 			ut.update(user_id, user)
 			ut.send_response("Cool!", user_id)
 
@@ -128,10 +134,7 @@ def extract_exercise(text):
 	return xSet(values[1], values[2], values[0], values[3])
 
 	
-def end_workout(user, user_id, workout):
-
-	#=====[ Record current workout and end time. Update user ]=====
-	workout.end()
+def end_user_workout(user, user_id, workout):
 
 	#=====[ Add workout to list of past workouts and put in idle mode ]=====
 	user.add_workout(workout)
@@ -139,5 +142,3 @@ def end_workout(user, user_id, workout):
 	user.status = "idle"
 	
 	ut.update(user_id, user)
-	ut.send_response(END_WORKOUT_MESSAGE, user_id)
-

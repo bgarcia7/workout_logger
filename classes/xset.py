@@ -2,7 +2,7 @@ import datetime
 
 class xSet:
 
-	def __init__(self, exercise, weight, reps, note):
+	def __init__(self, exercise, weight, reps, note=None):
 		self.exercise = exercise
 		self.weight = weight
 		self.reps = reps

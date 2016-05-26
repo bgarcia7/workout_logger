@@ -2,6 +2,7 @@ import datetime
 import xset
 from subroutine import Subroutine
 from resources import months
+from collections import Counter
 
 class Workout:
 
@@ -67,14 +68,25 @@ class Workout:
 
 				workout_summary += '\n'
 
+		return workout_summary 
+
+	def get_stats(self):
+		""" Calculates and returns a list of basic stats """
+
+		stats = ''
+
+		#=====[ Calculate volume, total_set_time and number of sets ]=====
 		self.calculate_volume()
 		self.calculate_total_set_time()
 		self.calculate_num_sets()
+		self.aggregate_muscle_groups()
 
-		workout_summary+= 'Volume: ' + str(self.volume) + '\n'
-		workout_summary += 'Avg. Set Time: ' + str(self.get_avg_set_time()) + '\n'
+		stats += 'Total Time: ' +str(int(self.total_set_time/60)) + ' minutes' + '\n'
+		stats += 'Volume: ' + str(self.volume) + '\n'
+		stats += 'Avg. Set Time: ' + "{0:.2f}".format(self.get_avg_set_time())
 
-		return workout_summary 
+		return stats
+
 
 	def new_subroutine(self, mode, exercises, curr_set=None):
 
@@ -95,22 +107,11 @@ class Workout:
 			total_volume += subroutine.get_volume()
 
 		self.volume = total_volume
-	
-	def get_volume(self):
-		""" return cached copy of workout volume """
-		return self.volume
 
 	def calculate_total_set_time(self):
 		""" calculate total time spent on sets in workout """
-		total_time = 0
 
-		for subroutine in self.subroutines:
-			total_time += subroutine.get_total_set_time()
-
-		self.total_set_time = total_time
-
-	def get_total_set_time(self):
-		return self.total_set_time
+		self.total_set_time = abs((self.start_time - self.end_time).total_seconds())
 
 	def calculate_num_sets(self):
 		""" calculate total number of sets performed in workout """
@@ -127,4 +128,16 @@ class Workout:
 	def get_avg_set_time(self):
 		""" get the average time per set of a workout """
 		return self.total_set_time * 1.0 / self.num_sets
+
+	def aggregate_muscle_groups(self):
+		""" Gets muscle groups for each exercise and aggregates them for the workout """
+
+		counts = Counter()
+
+		#=====[ Accumulate muscle groups from each subroutine ]=====
+		for subroutine in self.subroutines:
+			subroutine.aggregate_muscle_groups()
+			counts.update(subroutine.muscle_groups)
+
+		self.muscle_groups = counts
 

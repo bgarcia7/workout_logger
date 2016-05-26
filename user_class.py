@@ -1,4 +1,5 @@
 import datetime 
+from collections import Counter
 
 class User:
 
@@ -45,7 +46,7 @@ class User:
 		total_volume = 0
 
 		for workout in workouts:
-			total_volume += workout.get_volume() if workout.get_volume() else 0
+			total_volume += workout.volume if workout.volume else 0
 
 		return total_volume
 
@@ -55,7 +56,7 @@ class User:
 		total_set_time = 0
 
 		for workout in workouts:
-			total_set_time += workout.get_total_set_time() if workout.get_total_set_time() else 0
+			total_set_time += workout.total_set_time if workout.total_set_time else 0
 
 		return total_set_time
 
@@ -70,3 +71,17 @@ class User:
 
 	def get_avg_set_time(self, n):
 		return float("{0:.2f}".format(self.get_total_set_time(n) * 1.0 / self.get_num_sets(n)))
+
+	def get_muscle_groups(self, n):
+		""" Returns relative counts of all muscle groups worked over past n days """
+
+		workouts = self.get_workouts_from_last_n_days(n)
+
+		counts = Counter()
+
+		for workout in workouts:
+			workout.aggregate_muscle_groups()
+			counts.update(workout.muscle_groups)
+
+		return counts
+

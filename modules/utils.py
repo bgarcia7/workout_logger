@@ -86,3 +86,8 @@ def split_message(message):
 			to_send = to_send[:index]
 
 	return (to_send, message)
+
+def remove_user(user_id):
+	""" Removes user from the database """
+
+	users.remove({"user_id":user_id})

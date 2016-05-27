@@ -2,10 +2,13 @@ from database import *
 from collections import Counter
 import re
 
+muscles = ['lats', 'chest', 'quadriceps', 'biceps', 'middle back', 'traps', 'shoulders', 'calves', 'abdominals', 'glutes', 'forearms', 'lower back', 'triceps', 'hamstrings', 'abductors', 'adductors', 'neck']
+grouped_muscles = {'back':['lats', 'middle back', 'traps','lower back'], 'legs': ['adductors','quadriceps', 'calves', 'hamstrings'], 'abs':['abdominals'], 'butt':['glutes', 'abductors'], 'arms':['forearms',  'triceps', 'biceps']}
+
+
 def get_muscle_groups(exercise):
 	""" Takes the user-specified name of an exercise and returns the most relevant muscle groups """
 
-	print exercise
 	if not exercise:
 		return None
 

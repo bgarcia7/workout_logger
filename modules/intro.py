@@ -1,6 +1,6 @@
 import utils as ut
 import datetime 
-from responses import *
+from resources import *
 
 def process(user, message):
 

@@ -96,7 +96,7 @@ def process_message(message_obj):
 		users.insert_one({"user_id":user_id, "messages":[{"timestamp":timestamp, "message":message}],"profile":{}, "status": ("name",1), "food_collection":{}, "last_food_collection":0})		
 		# user = users.find_one({"user_id":user_id})
 		# goals.ask(user, user_id)
-		ut.send_response(responses.welcome_message, user_id)
+		ut.send_response(resources.welcome_message, user_id)
 		return
 	else:
 		user['messages'].append({"timestamp":timestamp, "message":message})

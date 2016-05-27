@@ -12,6 +12,7 @@ def get_muscle_groups(exercise):
 	#=====[ Count up occurrences of each muscle group ]=====
 	counts = count_muscle_groups(exercise)
 
+
 	#=====[ If no exercises found, then search for subgroups of the user-input string ]=====
 	if len(counts) == 0:
 
@@ -48,6 +49,6 @@ def count_muscle_groups(ex_string):
 	muscle_groups = exercise_collection.find({"exercise" : regex})
 	counts = Counter([ex['muscle'].strip() for ex in muscle_groups])
 
-	return counts 
+	return counts
 
 

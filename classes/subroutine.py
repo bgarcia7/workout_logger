@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 import xset 
 
 class Subroutine:
@@ -31,6 +31,7 @@ class Subroutine:
 			#=====[ If user only reported reps/weight, add exercise to set object ]=====
 			if not exercise:
 				exercise = self.curr_exercise
+				xset.exercise = exercise
 			
 			#=====[ Add the exercise to the list of exercises ]=====
 			if len(self.exercises) < 1:
@@ -91,9 +92,12 @@ class Subroutine:
 
 		for cycle in range(num_cycles):
 			for exercise in self.exercises:
-				xset = self.sets[exercise][cycle]
-				if xset:
-					flattened_sets.append(xset)
+				try:
+					xset = self.sets[exercise][cycle]
+					if xset:
+						flattened_sets.append(xset)
+				except:
+					continue
 
 		return flattened_sets
 
@@ -103,6 +107,7 @@ class Subroutine:
 	def get_total_set_time(self):
 		total_time = 0
 
+		print 'before flattened sets'
 		#=====[ Flatten grid of sets into an ordered list ]=====
 		flattened_sets = self.get_flattened_sets()
 
@@ -110,6 +115,7 @@ class Subroutine:
 		set_times = [ xset.time for xset in self.get_flattened_sets() ]
 
 		#=====[ Take the difference between every consecutive pair of sets ]=====
+		print 'before for loop'
 		for i in range(len(set_times) - 1):
 			time1 = set_times[i]
 			time2 = set_times[i + 1]
@@ -121,4 +127,15 @@ class Subroutine:
 
 	def get_avg_set_time(self):
 		return self.get_total_set_time() * 1.0 / self.num_sets
+
+	def aggregate_muscle_groups(self):
+		""" uses muscle_detector to infer the muscles being targeted by each exercise in the subroutine """
+
+		counts = Counter()
+
+		#=====[ iterate through each set and get its muscle group ]=====
+		for xset in self.get_flattened_sets():
+			counts.update(xset.get_muscle_group())
+
+		self.muscle_groups = counts
 

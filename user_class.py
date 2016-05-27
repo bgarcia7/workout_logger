@@ -1,5 +1,5 @@
 import datetime 
-from collections import Counter
+from collections import Counter, OrderedDict
 
 class User:
 
@@ -84,4 +84,33 @@ class User:
 			counts.update(workout.muscle_groups)
 
 		return counts
+
+	def query_exercise(self, exercise, workout_limit=1):
+		""" Returns an ordered dict where the keys are dates of workouts and the values are lists of sets of exercises that match the query """
+		
+		num_workouts_query_matched = 0
+		sets = OrderedDict()
+
+		# Loop over all workouts
+		for workout in self.workouts:
+
+			# Once we find enough workouts that contain the exercise queried, we can return the sets
+			if num_workouts_query_matched < workout_limit:
+
+				# Loop through all subroutines in the workout
+				for subroutine in workout.subroutines:
+
+					# If the subroutine contains the exercise
+					if exercise in subroutine.exercises:
+
+						workout_date = workout.start_time.date()
+
+						if workout_date not in sets:
+							sets[workout_date] = []
+
+						# Add all the sets to the list
+						sets[workout_date] += subroutine.sets[exercise]
+
+
+		return sets
 

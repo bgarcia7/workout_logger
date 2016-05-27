@@ -113,6 +113,23 @@ def process(user, message):
 			ut.send_response('Check out the muscles you targeted most:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
 
 
+	elif 'q:' in text:
+		exercise = text.split(':')[1].strip()
+		info = 'You queried for: %s\n\n' % exercise
+
+		sets = user.query_exercise(exercise)
+
+		for date in sets:
+			workout_sets = sets[date]
+
+			info += "Workout on %s:\n" % date
+
+			for xset in workout_sets:
+				info += "%s reps @ %s\n" % (xset.reps, xset.weight)
+
+		ut.send_response(info, user_id)
+
+
 	#==================[ Command used to drop a user from the database ]===================#
 	#																				       #
 	#	usage: " reset db "									   			   			   	   #

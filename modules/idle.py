@@ -3,6 +3,7 @@ import datetime
 from resources import *
 import workout_log
 
+
 def process(user, message):
 
 	user_id, text = ut.get_info(user, message)

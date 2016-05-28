@@ -98,7 +98,6 @@ def process_message(message_obj):
 	#=====[ Formulates and sends response ]=====
 	respond(message, user)
 
-	# ut.update(user_id, user)
 
 def respond(message, user):
 	""" 

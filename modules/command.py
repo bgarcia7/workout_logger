@@ -1,5 +1,6 @@
 import utils as ut
 import datetime 
+import goal
 from resources import *
 from spider import *
 
@@ -137,8 +138,27 @@ def process(user, message):
 	########################################################################################
 
 	elif text == 'reset db':
+		
 		ut.send_response('BYE FOREVER! :( ', user_id)
 		ut.remove_user(user_id)
+
+
+	#==================[ Command used set goals for targeted muscles ]=====================#
+	#																				       #
+	#	usage: " set goals "									   			   			   	   #
+	#																					   #
+	########################################################################################
+
+	elif 'set' in text and 'goal' in text:
+
+		muscle_groups = text.split(':')
+
+		#=====[ Check to make sure there are muscle groups specified after a colon ]=====
+		if len(muscle_groups) == 1:
+			ut.send_response(SET_GOALS, user_id)
+
+		#=====[ set goals for user ]=====
+		goal.process(user, user_id, muscle_groups[1])
 
 	else:
 

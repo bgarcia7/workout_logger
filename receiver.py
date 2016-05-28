@@ -36,7 +36,7 @@ def webhook():
 	resp = make_response('OK', 200)
 
 	try:
-		#=====[ user for verification ]=====
+		#=====[ use for verification ]=====
 		# return make_response(request.args['hub.challenge'])
 		
 		#=====[ Extract messaging events from json in request ]=====

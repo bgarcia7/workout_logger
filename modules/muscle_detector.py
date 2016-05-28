@@ -41,7 +41,7 @@ def get_muscle_groups(exercise):
 
 	if len(counts) > 0:
 		return counts
-	else
+	else:
 		return Counter(model.predict(exercise))
 
 def count_muscle_groups(ex_string):

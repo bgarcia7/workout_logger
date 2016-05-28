@@ -1,5 +1,6 @@
 from database import *
 from collections import Counter
+from resources import *
 import re
 
 muscles = ['lats', 'chest', 'quadriceps', 'biceps', 'middle back', 'traps', 'shoulders', 'calves', 'abdominals', 'glutes', 'forearms', 'lower back', 'triceps', 'hamstrings', 'abductors', 'adductors', 'neck']
@@ -37,7 +38,10 @@ def get_muscle_groups(exercise):
 				#=====[ Aggregate all results ]=====
 				counts.update(count_muscle_groups(ex))
 
-	return counts if len(counts) > 0 else None
+	if len(counts) > 0:
+		return counts
+	else
+		return Counter(model.predict(exercise))
 
 def count_muscle_groups(ex_string):
 	""" 

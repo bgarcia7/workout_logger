@@ -1,6 +1,7 @@
 import sys
 sys.path.append('modules/')
 
+from muscle_classifier import MuscleClassifier
 from muscle_detector import grouped_muscles
 
 #=====[ Standard messages ]=====
@@ -16,3 +17,5 @@ SET_GOALS = "Try specifying the muscles you want to focus on by typing 'set goal
 UPDATED_GOALS = "Alright, I'll remember that you want to focus on"
 
 months = ['Jan','Feb','Mar','April','May','June','July','Aug','Sep','Oct','Nov','Dec']
+
+model = MuscleClassifier()

@@ -1,4 +1,6 @@
 import datetime 
+from collections import Counter, OrderedDict
+from fuzzywuzzy import fuzz
 
 class User:
 
@@ -45,7 +47,7 @@ class User:
 		total_volume = 0
 
 		for workout in workouts:
-			total_volume += workout.get_volume() if workout.get_volume() else 0
+			total_volume += workout.volume if workout.volume else 0
 
 		return total_volume
 
@@ -55,7 +57,7 @@ class User:
 		total_set_time = 0
 
 		for workout in workouts:
-			total_set_time += workout.get_total_set_time() if workout.get_total_set_time() else 0
+			total_set_time += workout.total_set_time if workout.total_set_time else 0
 
 		return total_set_time
 
@@ -70,3 +72,49 @@ class User:
 
 	def get_avg_set_time(self, n):
 		return float("{0:.2f}".format(self.get_total_set_time(n) * 1.0 / self.get_num_sets(n)))
+
+	def get_muscle_groups(self, n):
+		""" Returns relative counts of all muscle groups worked over past n days """
+
+		workouts = self.get_workouts_from_last_n_days(n)
+
+		counts = Counter()
+
+		for workout in workouts:
+			workout.aggregate_muscle_groups()
+			counts.update(workout.muscle_groups)
+
+		return counts
+
+	def query_exercise(self, query, workout_limit=1):
+		""" Returns an ordered dict where the keys are dates of workouts and the values are lists of sets of exercises that match the query """
+		
+		num_workouts_query_matched = 0
+		sets = OrderedDict()
+
+		# Loop over all workouts
+		for workout in self.workouts:
+
+			# Once we find enough workouts that contain the exercise queried, we can return the sets
+			if num_workouts_query_matched < workout_limit:
+
+				# Loop through all subroutines in the workout
+				for subroutine in workout.subroutines:
+
+					# Loop through the exercises in the subroutine
+					for exercise in subroutine.exercises:
+
+						# If the exercise fuzzy matches the search query
+						if fuzz.ratio(query, exercise) > 80 or query in exercise or exercise in query:
+
+							workout_date = workout.start_time.date()
+
+							if workout_date not in sets:
+								sets[workout_date] = []
+
+							# Add all the sets to the list
+							sets[workout_date] += subroutine.sets[exercise]
+
+
+		return sets
+

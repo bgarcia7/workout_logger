@@ -1,6 +1,6 @@
 import utils as ut
 import datetime 
-from responses import *
+from resources import *
 import workout_log
 
 def process(user, message):

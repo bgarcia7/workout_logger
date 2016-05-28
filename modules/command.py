@@ -125,7 +125,7 @@ def process(user, message):
 			info += "Workout on %s:\n" % date
 
 			for xset in workout_sets:
-				info += "%s reps @ %s\n" % (xset.reps, xset.weight)
+				info += "%s reps of %s @ %s\n" % (xset.reps, xset.exercise, xset.weight)
 
 		ut.send_response(info, user_id)
 

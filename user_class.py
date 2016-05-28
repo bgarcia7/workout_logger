@@ -1,5 +1,6 @@
 import datetime 
 from collections import Counter, OrderedDict
+from fuzzywuzzy import fuzz
 
 class User:
 
@@ -85,7 +86,7 @@ class User:
 
 		return counts
 
-	def query_exercise(self, exercise, workout_limit=1):
+	def query_exercise(self, query, workout_limit=1):
 		""" Returns an ordered dict where the keys are dates of workouts and the values are lists of sets of exercises that match the query """
 		
 		num_workouts_query_matched = 0
@@ -100,16 +101,19 @@ class User:
 				# Loop through all subroutines in the workout
 				for subroutine in workout.subroutines:
 
-					# If the subroutine contains the exercise
-					if exercise in subroutine.exercises:
+					# Loop through the exercises in the subroutine
+					for exercise in subroutine.exercises:
 
-						workout_date = workout.start_time.date()
+						# If the exercise fuzzy matches the search query
+						if fuzz.ratio(query, exercise) > 80 or query in exercise or exercise in query:
 
-						if workout_date not in sets:
-							sets[workout_date] = []
+							workout_date = workout.start_time.date()
 
-						# Add all the sets to the list
-						sets[workout_date] += subroutine.sets[exercise]
+							if workout_date not in sets:
+								sets[workout_date] = []
+
+							# Add all the sets to the list
+							sets[workout_date] += subroutine.sets[exercise]
 
 
 		return sets

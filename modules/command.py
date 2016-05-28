@@ -2,7 +2,7 @@ import utils as ut
 import datetime 
 import goal
 from resources import *
-from spider import *
+# from spider import *
 
 command_list = ['list commands', 'sudo log: [suggestion]', 'list workouts','review last workout', 'review workout: [index]', 'review week']
 
@@ -62,8 +62,8 @@ def process(user, message):
 
 		index = 4 if len(workout.muscle_groups) > 3 else len(workout.muscle_groups)
 
-		if generate_spider(user_id, dict(workout.muscle_groups.most_common(index))):
-			ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
+		# if generate_spider(user_id, dict(workout.muscle_groups.most_common(index))):
+		# 	ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
 
 	
 	#==================[ Command used to review a particular workout ]=====================#
@@ -84,8 +84,8 @@ def process(user, message):
 
 			index = 4 if len(workout.muscle_groups) > 3 else len(workout.muscle_groups)
 
-			if generate_spider(user_id, dict(workout.muscle_groups.most_common(index))):
-				ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
+			# if generate_spider(user_id, dict(workout.muscle_groups.most_common(index))):
+			# 	ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
 
 		except Exception as e:
 			
@@ -110,8 +110,8 @@ def process(user, message):
 
 		index = 6 if len(workout.muscle_groups) > 5 else len(workout.muscle_groups)
 
-		if generate_spider(user_id, dict(user.get_muscle_groups(7).most_common(index))):
-			ut.send_response('Check out the muscles you targeted most:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
+		# if generate_spider(user_id, dict(user.get_muscle_groups(7).most_common(index))):
+		# 	ut.send_response('Check out the muscles you targeted most:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
 
 
 	elif 'q:' in text:

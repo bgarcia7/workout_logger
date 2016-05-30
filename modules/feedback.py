@@ -1,5 +1,6 @@
 import utils as ut
 from resources import *
+import re
 
 def start(user):
 
@@ -17,6 +18,9 @@ def process(user, message):
 
 	user_id, text = ut.get_info(user, message)
 	workout = user.get_last_workout()
+
+	rating = extract_int(text)
+	print rating
 
 	#On feedback question
 	if user.state == 0:
@@ -37,9 +41,9 @@ def process(user, message):
 
 
 	# On rating question
-	if user.state == 1:
-		if is_integer(text):
-			rating = int(text)
+	elif user.state == 1:
+
+		if rating:
 
 			if rating >= 1 and rating <= 10:
 				workout.rating = rating
@@ -58,9 +62,8 @@ def process(user, message):
 
 	# On difficulty question
 	elif user.state == 2:
-		if is_integer(text):
-			rating = int(text)
-
+		
+		if rating:
 			if rating >= 1 and rating <= 5:
 				workout.rating = rating
 				ut.send_response(QUESTION_END, user_id)
@@ -76,8 +79,8 @@ def process(user, message):
 
 	# On tiredness question
 	elif user.state == 3:
-		if is_integer(text):
-			rating = int(text)
+		
+		if rating:
 
 			if rating >= 1 and rating <= 5:
 				workout.rating = rating
@@ -91,9 +94,18 @@ def process(user, message):
 		ut.send_response(DIFF_TIRED_CLARIFY, user_id)
 		ut.send_response(TIREDNESS_QUESTION, user_id)
 
-def is_integer(text):
-	try: 
-		int(text)
-		return True
-	except ValueError:
-		return False
+def extract_int(text):
+	
+	number = None
+
+	#=====[ regex to extract weight ]=====
+	regex = r"\d+"
+
+	if re.search(regex,text):
+
+		match = re.search(regex, text)
+
+		#=====[ Store weight ]=====
+		number = int(match.group(0))
+		
+	return number

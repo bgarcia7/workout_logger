@@ -10,6 +10,7 @@ class User:
 		self.workouts = []
 		self.current_workout = None
 		self.status = "intro"
+		self.stage = 0
 
 
 	def add_message(self, message):
@@ -26,6 +27,9 @@ class User:
 
 	def get_current_workout(self):
 		return self.current_workout
+
+	def get_last_workout(self):
+		return self.workouts[-1] if self.workouts else None
 
 	def add_workout(self, workout):
 		self.workouts.append(workout)

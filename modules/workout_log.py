@@ -4,6 +4,7 @@ from resources import *
 import re
 import pickle
 import sys
+import feedback
 sys.path.append('classes/')
 from workout import Workout
 from subroutine import Subroutine
@@ -16,7 +17,7 @@ def start(user):
 	user_id = user.get_id()
 
 	#=====[ Start workout ]=====
-	user.status ="workout"
+	user.status = "workout"
 	user.current_workout = Workout()
 	user.time = datetime.datetime.now()
 	ut.update(user_id, user)
@@ -45,6 +46,10 @@ def process(user, message):
 
 		#=====[ After calling get_summary and updating workout stats, save workout ]=====
 		end_user_workout(user, user_id, workout)
+
+		feedback.start(user)
+
+
 
 
 	#=====[ If starting a new circuit ]=====
@@ -152,6 +157,5 @@ def end_user_workout(user, user_id, workout):
 	#=====[ Add workout to list of past workouts and put in idle mode ]=====
 	user.add_workout(workout)
 	user.current_workout = None
-	user.status = "idle"
 	
 	ut.update(user_id, user)

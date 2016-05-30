@@ -30,6 +30,7 @@ sys.path.append('modules/')
 import intro
 import idle
 import workout_log
+import feedback
 import command 
 import utils as ut
 from database import users 
@@ -119,6 +120,9 @@ def respond(message, user):
 
 	elif status == "workout":
 		workout_log.process(user, message)
+
+	elif status == "feedback":
+		feedback.process(user, message)
 
 
 #=====[ Runs app on running server.py ]=====

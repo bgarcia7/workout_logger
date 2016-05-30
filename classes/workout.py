@@ -16,6 +16,11 @@ class Workout:
 		self.num_sets = None
 		self.total_set_time = None
 
+		# Workout Feedback
+		self.rating = None
+		self.difficulty = None
+		self.tired = None
+
 	def __str__(self):
 		try:
 			return str(months[self.start_time.month - 1] + ' ' + str(self.start_time.day) + ' | Sets: %d | Volume: %d' % (self.num_sets, self.volume))

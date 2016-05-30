@@ -16,6 +16,17 @@ GOAL_EXERCISES = "Here are some examples of muscle groups you might want to spec
 SET_GOALS = "Try specifying the muscles you want to focus on by typing 'set goals: muscle1, muscle2, muscle3'"
 UPDATED_GOALS = "Alright, I'll remember that you want to focus on"
 
+#=====[ Feedback Messages ]=====
+FEEDBACK_QUESTION = "Would you like to give feedback by answering 3 quick questions?"
+FEEDBACK_CLARIFY = "Sorry I didn't quite get that, please answer yes or no"
+RATING_QUESTION = "How likely are you to repeat this workout in the future? Please enter a number from 1 to 10"
+RATING_CLARIFY = "Sorry I didn't quite get that, please enter a number from 1 to 10"
+DIFFICULTY_QUESTION = "How difficult did you find this workout? Please enter a number from 1 to 5"
+TIREDNESS_QUESTION = "How tired are you after this workout? Please enter a number from 1 to 5"
+DIFF_TIRED_CLARIFY = "Sorry I didn't quite get that, please enter a number from 1 to 5"
+FEEDBACK_END = "Thank you! Your feedback has been recorded"
+QUESTION_END = "Got it, thanks!"
+
 months = ['Jan','Feb','Mar','April','May','June','July','Aug','Sep','Oct','Nov','Dec']
 
 model = MuscleClassifier()

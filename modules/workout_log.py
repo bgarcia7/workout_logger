@@ -40,8 +40,11 @@ def process(user, message):
 		ut.send_response(workout.get_summary(), user_id)
 		ut.send_response(workout.get_stats(), user_id)
 
-		if generate_spider(user_id, dict(workout.muscle_groups.most_common(4))):
-			ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
+		ut.send_response(workout.summarize_muscle_groups(4), user_id)
+
+
+		# if generate_spider(user_id, dict(workout.muscle_groups.most_common(4))):
+		# 	ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
 
 		#=====[ After calling get_summary and updating workout stats, save workout ]=====
 		end_user_workout(user, user_id, workout)

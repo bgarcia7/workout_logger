@@ -2,6 +2,9 @@ from database import *
 from collections import Counter
 from resources import *
 import re
+from muscle_classifier import MuscleClassifier
+
+model = MuscleClassifier()
 
 muscles = ['lats', 'chest', 'quadriceps', 'biceps', 'middle back', 'traps', 'shoulders', 'calves', 'abdominals', 'glutes', 'forearms', 'lower back', 'triceps', 'hamstrings', 'abductors', 'adductors', 'neck']
 grouped_muscles = {'back':['lats', 'middle back', 'traps','lower back'], 'legs': ['adductors','quadriceps', 'calves', 'hamstrings'], 'abs':['abdominals'], 'butt':['glutes', 'abductors'], 'arms':['forearms',  'triceps', 'biceps']}
@@ -54,7 +57,7 @@ def count_muscle_groups(ex_string):
 
 	#=====[ search for exercises again ]=====
 	muscle_groups = exercise_collection.find({"exercise" : regex})
-	counts = Counter([ex['muscle'].strip() for ex in muscle_groups])
+	counts = Counter([ex['muscle'].strip().lower() for ex in muscle_groups])
 
 	return counts
 

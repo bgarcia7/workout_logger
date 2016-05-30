@@ -3,6 +3,7 @@ import xset
 from subroutine import Subroutine
 from resources import months
 from collections import Counter
+import numpy as np
 
 class Workout:
 
@@ -140,4 +141,29 @@ class Workout:
 			counts.update(subroutine.muscle_groups)
 
 		self.muscle_groups = counts
+
+	def summarize_muscle_groups(self, index):
+		""" Builds report of percentage of each muscle worked out """
+
+		#=====[ Get the N amount of muscle groups to report ]=====
+		index = index if len(self.muscle_groups) >= index else len(self.muscle_groups)
+
+		#=====[ Get the top N muscle groups ]=====
+		muscles = self.muscle_groups
+
+		#=====[ normalize values ]=====
+		values = muscles.values()
+		values = [int(100*val/sum(values)) for val in values]
+		labels = muscles.keys()
+
+		indices = np.asarray(values).argsort()[:index]
+
+		#=====[ Build summary string ]=====		
+		summary = 'You worked out the following muscles:\n\n'
+
+		for idx in indices[::-1]:
+
+			summary += labels[idx] + ': ' + str(values[idx]) + ' %\n'
+
+		return summary
 

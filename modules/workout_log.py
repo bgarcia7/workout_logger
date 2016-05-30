@@ -8,7 +8,7 @@ sys.path.append('classes/')
 from workout import Workout
 from subroutine import Subroutine
 from xset import xSet
-from spider import *
+# from spider import *
 
 def start(user):
 	""" Initializes users workout fields """

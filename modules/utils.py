@@ -28,7 +28,7 @@ def send_response(message, user_id):
 			data = json.dumps({"recipient": {"id": user_id}, "message": {"text": to_send}})
 
 			#=====[ URL is to a general facebook messenger bot endpoint + access_token ]=====
-			url = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + kelvin_token 
+			url = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + token 
 
 			#=====[ Construct headers ]=====
 			headers = {"Content-Type": "application/json"}

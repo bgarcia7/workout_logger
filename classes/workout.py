@@ -47,8 +47,9 @@ class Workout:
 	def get_subroutines(self):
 		return self.subroutines
 
-	def add_subroutine(self, subroutine):
+	def add_subroutine(self, subroutine=None):
 
+		subroutine = subroutine if subroutine else self.curr_subroutine
 		self.subroutines.append(subroutine)
 
 	def add_set(self, xset):

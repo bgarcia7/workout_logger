@@ -10,7 +10,14 @@ def process(user, message):
 
 	if "start" in text and "workout" in text:
 
-		workout_log.start(user)
+		#=====[ Start guided workout ]=====
+		if "guided" in text:
+			workout_template = True
+			workout_log.start(user, workout_template)
+
+		#=====[ Manually log workout ]=====
+		else:
+			workout_log.start(user)
 
 	#=====[ Send default message ]=====
 	else:

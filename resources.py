@@ -2,7 +2,7 @@ import sys
 sys.path.append('modules/')
 
 from muscle_classifier import MuscleClassifier
-from muscle_detector import grouped_muscles
+grouped_muscles = {'back':['lats', 'middle back', 'traps','lower back'], 'legs': ['adductors','quadriceps', 'calves', 'hamstrings'], 'abs':['abdominals'], 'butt':['glutes', 'abductors'], 'arms':['forearms',  'triceps', 'biceps']}
 
 #=====[ Standard messages ]=====
 WELCOME_MESSAGE = "Start a workout / end a workout. Just text me."
@@ -26,6 +26,9 @@ TIREDNESS_QUESTION = "How tired are you after this workout? Please enter a numbe
 DIFF_TIRED_CLARIFY = "Sorry I didn't quite get that, please enter a number from 1 to 5"
 FEEDBACK_END = "Thank you! Your feedback has been recorded"
 QUESTION_END = "Got it, thanks!"
+
+#=====[ Workout Guidance Messages ]=====
+START_WORKOUT = "Do you want to get started?"
 
 months = ['Jan','Feb','Mar','April','May','June','July','Aug','Sep','Oct','Nov','Dec']
 

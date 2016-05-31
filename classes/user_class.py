@@ -10,7 +10,7 @@ class User:
 		self.workouts = []
 		self.current_workout = None
 		self.status = "intro"
-		self.stage = 0
+		self.status_state = 0
 
 
 	def add_message(self, message):

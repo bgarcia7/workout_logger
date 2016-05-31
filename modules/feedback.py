@@ -8,7 +8,7 @@ def start(user):
 
 	#=====[ Start workout ]=====
 	user.status = "feedback"
-	user.state = 0
+	user.status_state = 0
 	ut.update(user_id, user)
 
 	ut.send_response(FEEDBACK_QUESTION, user_id)
@@ -23,15 +23,15 @@ def process(user, message):
 	print rating
 
 	#On feedback question
-	if user.state == 0:
+	if user.status_state == 0:
 
 		if "yes" in text.lower() or "ok" in text.lower():
 			ut.send_response(RATING_QUESTION, user_id)
-			user.state = 1
+			user.status_state = 1
 
 		elif "no" in text.lower():
 			user.status = "idle"
-			user.state = 0
+			user.status_state = 0
 
 		else:
 			ut.send_response(FEEDBACK_CLARIFY, user_id)
@@ -41,14 +41,14 @@ def process(user, message):
 
 
 	# On rating question
-	elif user.state == 1:
+	elif user.status_state == 1:
 
 		if rating:
 
 			if rating >= 1 and rating <= 10:
 				workout.rating = rating
 				ut.send_response(QUESTION_END, user_id)
-				user.state = 2
+				user.status_state = 2
 				ut.update(user_id, user)
 				ut.send_response(DIFFICULTY_QUESTION, user_id)
 				return
@@ -61,13 +61,13 @@ def process(user, message):
 
 
 	# On difficulty question
-	elif user.state == 2:
+	elif user.status_state == 2:
 		
 		if rating:
 			if rating >= 1 and rating <= 5:
 				workout.rating = rating
 				ut.send_response(QUESTION_END, user_id)
-				user.state = 3
+				user.status_state = 3
 				ut.update(user_id, user)
 				ut.send_response(TIREDNESS_QUESTION, user_id)
 				return
@@ -78,7 +78,7 @@ def process(user, message):
 
 
 	# On tiredness question
-	elif user.state == 3:
+	elif user.status_state == 3:
 		
 		if rating:
 
@@ -86,7 +86,7 @@ def process(user, message):
 				workout.rating = rating
 				ut.send_response(FEEDBACK_END, user_id)
 				user.status = "idle"
-				user.state = 0
+				user.status_state = 0
 				ut.update(user_id, user)
 				return
 

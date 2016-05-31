@@ -9,6 +9,7 @@ command_list = ['list commands', 'sudo log: [suggestion]', 'list workouts','revi
 def process(user, message):
 
 	user_id, text = ut.get_info(user, message)
+	print 'after ut get info'
 
 
 	#==========[ Command used to list all super commands for the workout logger ]==========#

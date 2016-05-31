@@ -38,7 +38,6 @@ def webhook():
 	try:
 		#=====[ use for verification ]=====
 		# return make_response(request.args['hub.challenge'])
-		
 		#=====[ Extract messaging events from json in request ]=====
 		if 'entry' in request.json and 'messaging' in request.json['entry'][0]:
 				messaging_events = request.json['entry'][0]['messaging']

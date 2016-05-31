@@ -7,6 +7,7 @@ db_client = MongoClient()
 db = db_client['test_workout_db']
 
 users = db['users']
+templates = db['workout_templates']
 
 #=====[ Used to drop user collection ]=====
 # users.remove()

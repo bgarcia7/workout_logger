@@ -8,7 +8,7 @@ import re
 
 command_list = {'help': 'Type "help [some_command]" in order to get more information about that command. By the way, when you see brackets, it is indicating a placeholder for some command or string, but you should not actually type the brackets when you use some command',
 	'start workout':'Type "start workout" to begin logging your exercise. To learn how to log a workout, type the instruction: "how to log". Remember you can exit at any time using "exit"',
-	'how to log': 'Gives you instructions on how to log a workout.'
+	'how to log': 'Gives you instructions on how to log a workout.',
 	'list commands':'Using the "list commands" command will list all of your commands',
  	'sudo log: [suggestion]': 'Type "sudo log: [some message]" in order to give us some feedback about how we can improve the logger!',
   	'list workouts': 'This will list all of your workouts',

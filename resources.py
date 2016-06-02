@@ -2,13 +2,25 @@ import sys
 sys.path.append('modules/')
 
 from muscle_classifier import MuscleClassifier
-from muscle_detector import grouped_muscles
 
+#=====[ Key words ]=====
 yes_words = ['yes', 'yah', 'sure', 'yup', 'ok', 'o.k.']
 no_words = ['no', 'nope','nah','later']
 
+#=====[ Muscle information ]=====
+muscles = ['lats', 'chest', 'quadriceps', 'biceps', 'middle back', 'traps', 'shoulders', 'calves', 'abdominals', 'glutes', 'forearms', 'lower back', 'triceps', 'hamstrings', 'abductors', 'adductors', 'neck']
+grouped_muscles = {'back':['lats', 'middle back', 'traps','lower back'], 'legs': ['adductors','quadriceps', 'calves', 'hamstrings'], 'abs':['abdominals'], 'butt':['glutes', 'abductors'], 'arms':['forearms',  'triceps', 'biceps']}
+
+#=====[ Date information ]=====
+months = ['Jan','Feb','Mar','April','May','June','July','Aug','Sep','Oct','Nov','Dec']
+
+#=====[ Classifier ]=====
+model = MuscleClassifier()
+
 #=====[ Standard messages ]=====
-WELCOME_MESSAGE = "Hey there! I'm here to help you log and optimize your workouts. At any point, you can review a list commands by saying 'list commands' or 'ls'. Learn more about any command using 'help [command]'. For example, if you want to learn how to log a workout, just ask me 'How do I log a workout?' (or something along those lines). Some other things you can do include setting goals for working out certain muscles, setting timers in between each of your sets, reviewing your workouts (in terms of sets, volume, and muscle groups targeted)"
+WELCOME_MESSAGE = "Hey there! I'm here to help you log and optimize your workouts. At any point, you can review a list commands by saying 'list commands' or 'ls'. Learn more about any command using 'help [command]'." 
+COMMAND_INTRO = "For example, if you want to learn how to log a workout, just ask me 'How do I log a workout?' (or something along those lines). Some other things you can do include setting goals for working out certain muscles, setting timers in between each of your sets, reviewing your workouts (in terms of sets, volume, and muscle groups targeted)"
+WORKOUT_INTRO = "Do you want to learn about how to log a workout?"
 DEFAULT_IDLE_MESSAGE = "That's interesting... just let me know when you're starting your workout. I'll be ready."
 IDLE_MODE = "Back in idle mode. Waiting on you, boss"
 ERROR_MESSAGE = "I had trouble processing that. Let's try again? If that doesn't work, try just typing 'exit' to go back in to idle mode."
@@ -52,7 +64,3 @@ DIFF_TIRED_CLARIFY = "Sorry I didn't quite get that, please enter a number from 
 FEEDBACK_END = "Thank you! Your feedback has been recorded"
 QUESTION_END = "Got it, thanks!"
 NO_FEEDBACK = "No worries. Maybe next time!"
-
-months = ['Jan','Feb','Mar','April','May','June','July','Aug','Sep','Oct','Nov','Dec']
-
-model = MuscleClassifier()

@@ -271,7 +271,9 @@ def process(user, message):
 
 	elif 'how' in text and 'log' in text:
 
-		logger_intro.start(user, user_id)
+		user.status = "intro"
+		user.status_state = 1
+		intro.process(user, message, instructions=True)
 
 	else:
 

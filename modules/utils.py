@@ -1,9 +1,14 @@
+import sys
+sys.path.append('../classes')
+
 from pymongo import MongoClient
 import requests
 import json
 import pickle
 import datetime
 from database import users
+from xset import xSet
+
 
 PACKAGE_LENGTH = 300
 token = 'EAAYWALshr2kBAIVdPVwKscuFZAGjdB2dJzFx1qd8JA3bMnDTaZCr0fH0avAlPfLv72yBFEVtSXgXICMGWXZCbHS97OgZA5Q4qF0xdZAFRs0CtQ5HpMGUuNZCHJoewtR5ZCdKZA0UdHGwR6FZAETigcCYOU1bPH6xH00yfgV7ZASpGhbgZDZD'
@@ -39,18 +44,49 @@ def send_response(message, user_id):
 		except Exception as e:
 			print e
 
+def send_button_confirm_response(message, user_id):
+
+	try:
+	
+		buttons = [
+					{'type':'postback','title':'no','payload':'no'}, \
+					{'type':'postback','title':'yes','payload':'yes'}
+					]
+
+		#=====[ Data contains facebook specific json format ]=====
+		data = {"recipient":{ "id": user_id}, "message":{ "attachment":{ "type":"template", "payload":{ "template_type":"button", "text": message, "buttons":buttons  }}}}
+
+		data = json.dumps(data)
+
+		#=====[ URL is to a general facebook messenger bot endpoint + access_token ]=====
+		url = 'https://graph.facebook.com/v2.6/me/messages?access_token=' + token 
+
+		#=====[ Construct headers ]=====
+		headers = {"Content-Type": "application/json"}
+
+		#=====[ Make request and get response ]=====
+		response = requests.post(url=url.strip(), data=data, headers=headers)		
+
+	except Exception as e:
+		print e
+
 def update(user_id, user_obj):
 	""" Updates user object in mongodb """
 
 	users.update({"user_id":user_id}, {"user_id":user_id, "user_object":pickle.dumps(user_obj)})
 
 
-def get_info(user, message):
+def get_info(user, message, state=False):
 	""" Returns user information """
 
+	print 'before text'
 	text = message["text"].lower().strip()
 
-	return user.get_id(), text
+	if state:
+		print 'in state'
+		return user.id, text, user.status_state
+	else:
+		return user.id, text
 
 
 def extract_obj_info(message_obj):
@@ -93,3 +129,48 @@ def remove_user(user_id):
 	""" Removes user from the database """
 
 	users.remove({"user_id":user_id})
+
+def extract_exercise(text):
+	""" Extracts reps, exercise and weight from text """
+	
+	regexes = [
+			#=====[ rep regex ]=====
+			[{'reg_str':r'(\d+) ?(reps)?(at ?|@ ?)?(of)?', 'match':1}], 
+			#=====[ exercise regex ]=====
+			[{'reg_str':r'(\d+) ?reps( of )?([^\d]+)( at ?| ?@ ?)(\d+)', 'match': 3}, 
+			 {'reg_str':r'(\d+) ?reps (of|at|@) ([^\d]+)', 'match': 3},
+			 {'reg_str':r'(\d+) ?((min(ute)?s?)|(sec(ond)?s?)|(h(ou)?rs?))( of )?([^\d]+)( at ?| ?@ ?)(\d+)', 'match':10},
+			 {'reg_str':r'(\d+) ?((min(ute)?s?)|(sec(ond)?s?)|(h(ou)?rs?)) ?(of|at|@) ?([^\d]+)', 'match':10}], 
+			#=====[ weight regex ]=====
+			[{'reg_str': r'(at ?|@ ?|of ?)(\d+)', 'match': 2}],
+			#=====[ note regex ]=====
+			[{'reg_str': r'note:(.+)', 'match':1}]]
+
+	values = []
+
+	#=====[ Search for each exercise parameters (weight, reps, exercise) ]=====
+	for idx, reg_array in enumerate(regexes):
+
+		value_found = False
+
+		#=====[ Iterate through each regex for a particular parameter ]=====
+		for reg in reg_array:
+
+			reg_str = reg['reg_str']
+
+			#=====[ Search for regext in string ]=====
+			if re.search(reg_str, text):
+
+				value_found = True
+				values.append(re.search(reg_str, text).group(reg['match']))
+				break
+
+		#=====[ Return None if no reps extracted ]=====
+		if not value_found:
+			if idx == 0:
+				return None
+
+			values.append(None)
+
+	#=====[ Returns xSet object constructed from extracted reps, exercise, and weight ]=====
+	return xSet(values[1], values[2], values[0], values[3])

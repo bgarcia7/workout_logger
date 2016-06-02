@@ -5,7 +5,7 @@ from muscle_classifier import MuscleClassifier
 from muscle_detector import grouped_muscles
 
 #=====[ Standard messages ]=====
-WELCOME_MESSAGE = "Start a workout / end a workout. Just text me."
+WELCOME_MESSAGE = "Hey there! I'm here to help you log and optimize your workouts. At any point, you can review a list commands by saying 'list commands' or 'ls'. Learn more about any command using 'help [command]'. For example, if you want to learn how to log a workout type 'help start workout'. Some other things you can do include setting goals for working out certain muscles, setting timers in between each of your sets, reviewing your workouts (in terms of sets, volume, and muscle groups targeted)"
 START_WORKOUT_MESSAGE = "Let's go baby, no pain = no gain. Record after each exercise."
 DEFAULT_IDLE_MESSAGE = "That's interesting... just let me know when you're starting your workout. I'll be ready."
 END_WORKOUT_MESSAGE = "Nice! Good workout!"
@@ -23,6 +23,7 @@ FINAL_TIMING_WARNING = "NEXT SET! LET'S GO! You've been resting for "
 NO_WORKOUT_LOGGED = "Doesn't look like we got any sets logged. Didn't log that workout."
 ERROR_MESSAGE = "I had trouble processing that. Let's try again? If that doesn't work, try just typing 'exit' to go back in to idle mode."
 IDLE_MODE = "Back in idle mode. Waiting on you, boss"
+HELP_COMMAND = "Sorry, I couldn't find that command."
 
 #=====[ Feedback Messages ]=====
 FEEDBACK_QUESTION = "Would you like to give feedback by answering 3 quick questions?"

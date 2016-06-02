@@ -17,11 +17,11 @@ command_list = {'help': 'Type "help [some_command]" in order to get more informa
     'set timer': 'Type "set timer(s) [number of seconds], [number of seconds], and [number of seconds]" to set as many timers as you want. These timers will start as soon as you log an exercise. The assumption is that you do some exercise and immediately log it -- at that point, we start your rest timer.',
     'clear timer': 'Type "clear timer(s)" in order to turn all of your timers off',
     'set goal': 'Type "set goals: [muscle group 1], [muscle group 2], [muscle group 3]" in order to let us know that you want to target those muscles. Eventually, we\'ll actually hold you to it!',
-	'exit': 'Type "exit" to get out of any current flow. We won\'t save any workout in progress.']
+	'exit': 'Type "exit" to get out of any current flow. We won\'t save any workout in progress.'}
 
 command_shortcuts = {'help':['help'],'list commands':['list commands','ls'],'sudo log: [suggestion]': ['sudo log', 'log'],
   	'list workouts': ['list workouts'], 'review last workout': ['review last workout'],'review workout: [index]': ['review workout'], 'review week': ['review week'],
-    'reset db': ['reset db'], ['query: [exercise]': ['query', 'q'], 'set timer': ['set timer', 'set timers'], 'clear timer': ['clear timer', 'clear timers'], 'set goal': ['set goal', 'set goals'],
+    'reset db': ['reset db'], 'query: [exercise]': ['query', 'q'], 'set timer': ['set timer', 'set timers'], 'clear timer': ['clear timer', 'clear timers'], 'set goal': ['set goal', 'set goals'],
 	'exit': ['exit']}
 
 def process(user, message):

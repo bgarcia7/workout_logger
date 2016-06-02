@@ -2,6 +2,7 @@ import utils as ut
 import datetime 
 import goal
 from resources import *
+import re
 # from spider import *
 
 command_list = ['list commands', 'sudo log: [suggestion]', 'list workouts','review last workout', 'review workout: [index]', 'review week']
@@ -60,7 +61,8 @@ def process(user, message):
 		ut.send_response(workout.get_summary(), user_id)
 		ut.send_response(workout.get_stats(),user_id)
 
-		index = 4 if len(workout.muscle_groups) > 3 else len(workout.muscle_groups)
+		ut.send_response(workout.summarize_muscle_groups(4), user_id)
+		# index = index if len(workout.muscle_groups) >= index else len(workout.muscle_groups)
 
 		# if generate_spider(user_id, dict(workout.muscle_groups.most_common(index))):
 		# 	ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
@@ -82,7 +84,9 @@ def process(user, message):
 			ut.send_response(user.workouts[-idx].get_summary(), user_id)
 			ut.send_response(user.workouts[-idx].get_stats(), user_id)
 
-			index = 4 if len(workout.muscle_groups) > 3 else len(workout.muscle_groups)
+			ut.send_response(workout.summarize_muscle_groups(4), user_id)
+
+			# index = 4 if len(workout.muscle_groups) > 3 else len(workout.muscle_groups)
 
 			# if generate_spider(user_id, dict(workout.muscle_groups.most_common(index))):
 			# 	ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
@@ -108,7 +112,9 @@ def process(user, message):
 
 		ut.send_response(info, user_id)
 
-		index = 6 if len(workout.muscle_groups) > 5 else len(workout.muscle_groups)
+		ut.send_response(user.get_muscle_groups(20, 7), user_id)
+
+		# index = 6 if len(workout.muscle_groups) > 5 else len(workout.muscle_groups)
 
 		# if generate_spider(user_id, dict(user.get_muscle_groups(7).most_common(index))):
 		# 	ut.send_response('Check out the muscles you targeted most:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
@@ -145,7 +151,7 @@ def process(user, message):
 
 	#==================[ Command used set goals for targeted muscles ]=====================#
 	#																				       #
-	#	usage: " set goals "									   			   			   	   #
+	#	usage: " set goals: muslce1, muscle2, muscle3"			   			   			   #
 	#																					   #
 	########################################################################################
 
@@ -160,11 +166,85 @@ def process(user, message):
 		#=====[ set goals for user ]=====
 		goal.process(user, user_id, muscle_groups[1])
 
+	#================[ Command used set timers at specified intervals ]====================#
+	#																				       #
+	#	usage: " set timer for 45 and 60 seconds"			   			   			       #
+	#																					   #
+	########################################################################################
+
+	elif 'set' in text and 'timer' in text:
+
+		times = re.split(',|and',text)
+		found_time = False
+
+		#=====[ Checks each comma separated value for a time ]=====
+		for time_candidate in times:
+
+			time = extract_int(time_candidate)
+
+			#=====[ If time for timer extracted, save info ]=====
+			if time:
+				
+				found_time = True
+
+				if hasattr(user,'timer'):
+					user.timer.append(time)
+				else:
+					user.timer = [time]
+
+		#=====[ Tell user how to set timer ]=====
+		if not found_time:
+			ut.send_response(HOW_TO_SET_TIMER, user_id)
+		else:
+			ut.send_response(SET_TIMER + ', '.join([str(x) for x in user.timer]) + ' seconds', user_id	)
+			ut.update(user_id, user)
+
+	#========================[ Command used to clear all timers ]==========================#
+	#																				       #
+	#	usage: " clear timer "			   			   			       					   #
+	#																					   #
+	########################################################################################
+
+	elif 'clear' in text and 'timer' in text:
+
+		user.timer = []
+		ut.send_response(CLEARED_TIMER, user_id)
+		ut.update(user_id, user)
+
+	#========================[ Command used to exit to idle mode ]=========================#
+	#																				       #
+	#	usage: " clear timer "			   			   			       					   #
+	#																					   #
+	########################################################################################
+
+	elif text == 'exit':
+		
+		user.status = 'idle'
+		ut.send_response(IDLE_MODE, user_id)
+		ut.update(user_id, user)
+
 	else:
 
 		return False
 
 	return True
+
+def extract_int(text):
+	
+	number = None
+
+	#=====[ regex to extract weight ]=====
+	regex = r"\d+"
+
+	if re.search(regex,text):
+
+		match = re.search(regex, text)
+
+		#=====[ Store weight ]=====
+		number = int(match.group(0))
+		
+	return number
+
 
 
 

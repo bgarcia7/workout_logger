@@ -32,6 +32,7 @@ import idle
 import workout_log
 import feedback
 import command 
+import logger_intro
 import utils as ut
 from database import users
 from resources import *
@@ -126,6 +127,9 @@ def respond(message, user):
 
 		elif status == "feedback":
 			feedback.process(user, message)
+		
+		elif status == "logger_intro":
+			logger_intro.process(user, message)
 
 	#=====[ If error caught, send user an error message and keep in same state ]=====
 	except Exception as e:

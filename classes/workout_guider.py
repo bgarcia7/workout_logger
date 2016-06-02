@@ -30,38 +30,81 @@ class WorkoutGuider():
 			state = NOT_STARTED ---> ask user to start
 			state = IN_WORKOUT ---> log current set reported by user
 
+			Returns bool representing successful parse and whether we should move on to next set
+
 		"""
-		print 'WEre in process!'
+		print 'Were in process!'
 
 		#=====[ If user has not started workout ]=====
+		print self.state
 		if self.state == NOT_STARTED:
-
+			print "NOT STARTED"
 			if 'yes' in text:
 
-				self.state == IN_WORKOUT
+				self.state = IN_WORKOUT
 				self.workout_state = (0,0)
-				self.subroutine_intro()
+				self.subroutine_intro(user_id)
+				return True
 
 			else:
-
 				ut.send_response(START_WORKOUT,user_id)
+				return False
 
 		#=====[ If in workout, log state ]=====
 		elif self.state == IN_WORKOUT:
-
+			print "IN WORKOUT"
 			sub_state, set_state = self.workout_state
 
 			user_set = ut.extract_exercise(text)
-			ut.send_response('Got your first set to be: ' + str(user_set), user_id)
+			if user_set:
+				ut.send_response('Got your last set to be: ' + str(user_set), user_id)
+				return True
+			else:
+				ut.send_response('Exercise not recognized, please retry', user_id)
+				return False
 
 
-
-
-
-
-	def subroutine_intro(self):
-
+	def subroutine_intro(self, user_id):
 		sub_state = self.workout_state[0]
 
-		subroutine = self.workout.subroutines[sub_state]
-		ut.send_response('Workout is: ' + str(subroutine), user_id)
+		subroutine = self.template.workout.subroutines[sub_state]
+		response = 'Subroutine is:\n'
+
+		for exercise in subroutine.exercises:
+			response += exercise + '\n'
+
+		ut.send_response(response, user_id)
+
+	def next_set(self, user_id):
+		sub_state, set_state = self.workout_state
+
+		set_state += 1
+
+		if set_state >= self.template.workout.subroutines[sub_state].num_sets:
+			set_state = 0
+			sub_state += 1
+
+
+		if sub_state >= len(self.template.workout.subroutines):
+			return None
+
+		# Update object workout state
+		self.workout_state = (sub_state, set_state)
+
+		# set_state == 0 means we are starting a new subroutine
+		if set_state == 0:
+			self.subroutine_intro(user_id)
+
+		response = "Your next set is: "
+
+		sets = self.template.workout.subroutines[sub_state].get_flattened_sets()
+		xset = sets[set_state]
+
+		response += xset.exercise + ' ' + str(xset) + "\n"
+
+		ut.send_response(response, user_id)
+
+		
+		print self.workout_state
+		return self.workout_state
+

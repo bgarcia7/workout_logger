@@ -39,10 +39,10 @@ def start(user, workout_template=None):
 
 def process(user, message):
 
-	print 'in workout process'
 	user_id, text, status_state = ut.get_info(user, message, state=True)
-	print 'before workout'
 	workout = user.current_workout
+
+	print workout
 
 	#=====[ End Workout ]=====
 	if "end" in text and "workout" in text:
@@ -133,14 +133,37 @@ def process(user, message):
 	########################################################################################
 
 	elif status_state == GUIDED_WORKOUT:
+		print workout
 
-		print 'in guided workout_log'
 		workout_guider = user.workout_guider
 
-		print 'before guided workout process'
 		#=====[ Log set and move to next set in workout ]=====
-		workout_guider.process(text, user_id)
-		workout_guider.next_set()
+		next_set = workout_guider.process(text, user_id)
+
+		# status will be None if there is no next set do
+		status = True
+
+		# process returns whether we should move on to next set
+		if next_set:
+			status = workout_guider.next_set(user_id)
+
+		# If there is no next set, the workout guider is done and None will be returned so we should end the workout
+		if not status:
+			# TODO: This code is duplicated from above. Factor out to helper
+			#=====[ Record current workout and end time. Update user ]=====
+			workout.end()
+
+			ut.send_response(END_WORKOUT_MESSAGE, user_id)
+
+			#=====[ Send workout summary, stats, and spider chart ]=====
+			ut.send_response(workout.get_summary(), user_id)
+			ut.send_response(workout.get_stats(), user_id)
+
+			ut.send_response(workout.summarize_muscle_groups(4), user_id)
+			end_user_workout(user, user_id, workout)
+			# END TODO
+
+			workout_guider = None
 
 		user.workout_guider = workout_guider
 		ut.update(user_id, user)

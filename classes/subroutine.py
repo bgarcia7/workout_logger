@@ -107,7 +107,6 @@ class Subroutine:
 	def get_total_set_time(self):
 		total_time = 0
 
-		print 'before flattened sets'
 		#=====[ Flatten grid of sets into an ordered list ]=====
 		flattened_sets = self.get_flattened_sets()
 
@@ -115,7 +114,6 @@ class Subroutine:
 		set_times = [ xset.time for xset in self.get_flattened_sets() ]
 
 		#=====[ Take the difference between every consecutive pair of sets ]=====
-		print 'before for loop'
 		for i in range(len(set_times) - 1):
 			time1 = set_times[i]
 			time2 = set_times[i + 1]

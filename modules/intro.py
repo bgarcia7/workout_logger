@@ -55,7 +55,6 @@ def process(user, message, instructions=False):
 				#=====[ Teach user how to log circuits ]=====
 				ut.send_response(WORKOUT_CIRCUIT_INITIALIZATION, user_id)
 				ut.send_response(WORKOUT_CIRCUIT_CONTINUATION, user_id)
-				return
 
 		ut.send_response(ASK_SEE_EXAMPLE, user_id)
 		user.status_state = 3

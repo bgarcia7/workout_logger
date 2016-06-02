@@ -53,7 +53,7 @@ LEARN_ABOUT_CIRCUITS = "Do you want to learn about how to log circuits?"
 DONE_INSTRUCTIONS = "Alrighty then. Remember: to get started, type 'start workout'"
 ASSUME_DONE_INSTRUCTIONS = "I'll take that as a 'no'. Remember: to get started, type 'start workout'"
 ASK_SEE_EXAMPLE = "OK. Do you want to see an example of how you might log a workout?"
-WORKOUT_EXAMPLE = "start workout\n(^ initialize workout mode)\n\n10 reps of chest press at 135\n(^ starting a new exercise)\n8 at 155\n(^ don't need to repeat chest press)\n6 at 165\n5 at 175\n\nstart circuit: lunges, squats, situps\n10 at 30 pounds\n(^ referring to lunges)\n8 reps at 135\n(^ referring to squats)\n25\n(^ referring to situp reps)\n8 at 40 pounds\n(^ referring to lunges again)\n6 reps at 145\n(^ referring to squats again)\n30 reps\n(^ referring to situps again)\n\n12 reps of box jumps\n10\n10\n\nend workout\n(^ boom, you're done)"
+WORKOUT_EXAMPLE = "start workout\n(^ initialize workout mode)\n\n10 reps of chest press at 135\n(^ starting a new exercise)\n8 at 155\n(^ don't need to repeat chest press)\n6 at 165\n5 at 175\n\nstart circuit: lunges, squats, situps\n(^ automatically ends the chest press subroutine and starts tracking your circuit)\n\n10 at 30 pounds\n(^ referring to lunges)\n8 reps at 135\n(^ referring to squats)\n25\n(^ referring to situp reps)\n8 at 40 pounds\n(^ referring to lunges again)\n6 reps at 145\n(^ referring to squats again)\n30 reps\n(^ referring to situps again)\n\n12 reps of box jumps\n10\n10\n\nend workout\n(^ boom, you're done)"
 
 #=====[ Feedback Messages ]=====
 FEEDBACK_QUESTION = "Would you like to give feedback by answering 3 quick questions?"

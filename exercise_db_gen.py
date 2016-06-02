@@ -38,3 +38,5 @@ db_client = MongoClient()
 db = db_client['exercise_db']
 
 exercise_collection = db['exercises']
+
+exercise_collection.insert_many(to_insert)

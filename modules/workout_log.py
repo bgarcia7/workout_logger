@@ -10,12 +10,9 @@ sys.path.append('classes/')
 from workout import Workout
 from subroutine import Subroutine
 from xset import xSet
-<<<<<<< HEAD
-=======
 from multiprocessing import Process
 import os
 import signal
->>>>>>> 367a12717d0459d6615f5407d858673e5e54fcab
 # from spider import *
 
 def start(user):

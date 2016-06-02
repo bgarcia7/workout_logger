@@ -83,7 +83,6 @@ def get_info(user, message, state=False):
 	text = message["text"].lower().strip()
 
 	if state:
-		print 'in state'
 		return user.id, text, user.status_state
 	else:
 		return user.id, text

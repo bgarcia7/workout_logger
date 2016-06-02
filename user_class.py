@@ -1,7 +1,6 @@
 import datetime 
 from collections import Counter, OrderedDict
 from fuzzywuzzy import fuzz
-import numpy as np
 
 class User:
 
@@ -11,7 +10,7 @@ class User:
 		self.workouts = []
 		self.current_workout = None
 		self.status = "intro"
-		self.stage = 0
+		self.status_state = 0
 
 
 	def add_message(self, message):
@@ -78,7 +77,7 @@ class User:
 	def get_avg_set_time(self, n):
 		return float("{0:.2f}".format(self.get_total_set_time(n) * 1.0 / self.get_num_sets(n)))
 
-	def get_muscle_groups(self, n, index):
+	def get_muscle_groups(self, n):
 		""" Returns relative counts of all muscle groups worked over past n days """
 
 		workouts = self.get_workouts_from_last_n_days(n)
@@ -89,28 +88,7 @@ class User:
 			workout.aggregate_muscle_groups()
 			counts.update(workout.muscle_groups)
 
-		muscles = counts
-
-		#=====[ Get the N amount of muscle groups to report ]=====
-		index = index if len(muscles) >= index else len(muscles)
-
-		#=====[ normalize values ]=====
-		values = muscles.values()
-		labels = muscles.keys()
-		indices = np.asarray(values).argsort()[::-1][:index]
-
-		labels = [labels[idx] for idx in indices]
-		values = [values[idx] for idx in indices]
-		values = [int(100*val/sum(values)) for val in values]
-
-		#=====[ Build summary string ]=====		
-		summary = 'You worked out the following muscles:\n\n'
-
-		for idx, label in enumerate(labels):
-
-			summary += label + ': ' + str(values[idx]) + ' %\n'
-
-		return summary
+		return counts
 
 	def query_exercise(self, query, workout_limit=1):
 		""" Returns an ordered dict where the keys are dates of workouts and the values are lists of sets of exercises that match the query """

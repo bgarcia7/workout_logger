@@ -15,6 +15,7 @@ def process(user, message, instructions=False):
 		ut.send_response(WORKOUT_INTRO, user_id)
 
 		user.status_state == 1
+		ut.update_user(user_id, user)
 
 	#=====[ Begins teaching a user how to log a workout ]=====	
 	elif status_state == 1:
@@ -40,6 +41,9 @@ def process(user, message, instructions=False):
 			user.status = "idle"
 			user.status_state = 0
 			ut.send_response(DONE_INSTRUCTIONS, user_id)
+
+		ut.update_user(user_id, user)
+
 
 	#=====[ Processes message when user is learning about logging workouts. Currently, just checks to see if user wants to learn 
 	#=====[ about logging circuits ]=====

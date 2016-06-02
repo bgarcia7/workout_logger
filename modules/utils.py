@@ -79,7 +79,6 @@ def update(user_id, user_obj):
 def get_info(user, message, state=False):
 	""" Returns user information """
 
-	print 'before text'
 	text = message["text"].lower().strip()
 
 	if state:

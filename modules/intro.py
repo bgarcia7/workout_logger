@@ -11,7 +11,7 @@ def process(user, message, instructions=False):
 
 		#=====[ Send introduction messages to user ]=====
 		ut.send_response(WELCOME_MESSAGE, user_id)
-		ut.send_reponse(COMMAND_INTRO, user_id)
+		ut.send_response(COMMAND_INTRO, user_id)
 		ut.send_response(WORKOUT_INTRO, user_id)
 
 		user.status_state == 1

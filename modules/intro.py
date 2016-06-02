@@ -14,8 +14,7 @@ def process(user, message, instructions=False):
 		ut.send_response(COMMAND_INTRO, user_id)
 		ut.send_response(WORKOUT_INTRO, user_id)
 
-		user.status_state == 1
-		ut.update(user_id, user)
+		user.status_state = 1
 
 	#=====[ Begins teaching a user how to log a workout ]=====	
 	elif status_state == 1:
@@ -31,10 +30,9 @@ def process(user, message, instructions=False):
 			ut.send_response(WORKOUT_START_INSTRUCTIONS, user_id)
 			ut.send_response(WORKOUT_SET_INITIALIZATION, user_id)
 			ut.send_response(WORKOUT_SET_CONTINUATION, user_id)
-			ut.send_response(WORKOUT_TIMER, user_id)
 			ut.send_response(LEARN_ABOUT_CIRCUITS, user_id)
 
-			user.status_state == 2
+			user.status_state = 2
 
 		else:
 			
@@ -42,17 +40,10 @@ def process(user, message, instructions=False):
 			user.status_state = 0
 			ut.send_response(DONE_INSTRUCTIONS, user_id)
 
-		ut.update(user_id, user)
-
 
 	#=====[ Processes message when user is learning about logging workouts. Currently, just checks to see if user wants to learn 
 	#=====[ about logging circuits ]=====
 	elif status_state == 2:
-
-		#=====[ Update user into idle mode regardless of whether they wish to learn about circuits or not ]=====
-		user.status = "idle"
-		user.status_state = 0
-		ut.update(user_id, user)
 
 		user_id, text = ut.get_info(user, message)
 
@@ -66,6 +57,25 @@ def process(user, message, instructions=False):
 				ut.send_response(WORKOUT_CIRCUIT_CONTINUATION, user_id)
 				return
 
+		ut.send_response(ASK_SEE_EXAMPLE, user_id)
+		user.status_state = 3
+
+	elif status_state == 3:
+
+		#=====[ Update user into idle mode regardless of whether they wish to learn about circuits or not ]=====
+		user.status = "idle"
+		user.status_state = 0
+		ut.update(user_id, user)
+
+		#=====[ Check if user gave a 'yes' word. If so gives information about logging circuits ]=====
+		for word in yes_words:
+			
+			if word in text:
+			
+				#=====[ Teach user how to log circuits ]=====
+				ut.send_response(WORKOUT_EXAMPLE, user_id)
+				return
+
 		#=====[ Checks if user gave a 'no' word ]=====
 		for word in no_words:
 
@@ -77,5 +87,6 @@ def process(user, message, instructions=False):
 		#=====[ If no 'yes' or 'no' word found, then just assume user doesn't want to learn about logging circuits ]=====
 		ut.send_response(ASSUME_DONE_INSTRUCTIONS, user_id)
 
+	#=====[ update user (primarily state) in db ]=====
 	ut.update(user_id, user)
 

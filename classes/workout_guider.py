@@ -39,7 +39,7 @@ class WorkoutGuider():
 			if 'yes' in text:
 
 				self.state = IN_WORKOUT
-				self.workout_state = (0,0)
+				self.workout_state = (0, -1)
 				self.subroutine_intro(user_id)
 				return True
 
@@ -75,18 +75,23 @@ class WorkoutGuider():
 	def next_set(self, user_id):
 		sub_state, set_state = self.workout_state
 
+		# Get the subroutine of the current set
+		curr_subroutine = self.template.workout.subroutines[sub_state]
+
 		set_state += 1
 
-		if set_state >= self.template.workout.subroutines[sub_state].num_sets:
+		if set_state >= curr_subroutine.num_sets:
 			set_state = 0
 			sub_state += 1
-
 
 		if sub_state >= len(self.template.workout.subroutines):
 			return None
 
-		# TODO: FOR BRANDON
-		# get_feedback - current user set, current template set, next template set (None for diff subroutine)
+
+		# Update curr_subroutine after updating indexes
+		curr_subroutine = self.template.workout.subroutines[sub_state]
+		sets_per_cycle = len(curr_subroutine.exercises)
+		subroutine_mode = curr_subroutine.mode
 
 		# Update object workout state
 		self.workout_state = (sub_state, set_state)
@@ -94,6 +99,21 @@ class WorkoutGuider():
 		# set_state == 0 means we are starting a new subroutine
 		if set_state == 0:
 			self.subroutine_intro(user_id)
+
+		# If we are at the beginning of a cycle in a circuit
+		if subroutine_mode == "circuit" and set_state % sets_per_cycle == 0:
+			response = "Next Cycle of Circuit: \n"
+
+			sets = self.template.workout.subroutines[sub_state].get_flattened_sets()
+		
+			for i in range(sets_per_cycle):
+				xset = sets[set_state + i]
+				response += xset.exercise + ' ' + str(xset) + "\n"
+
+			ut.send_response(response, user_id)
+
+		# TODO: FOR BRANDON
+		# get_feedback - current user set, current template set, next template set (None for diff subroutine)
 
 		response = "Your next set is: "
 

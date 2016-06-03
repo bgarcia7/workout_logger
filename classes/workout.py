@@ -33,10 +33,17 @@ class Workout:
 		return self.start_time
 
 	def end(self):
+		
+		#=====[ Indicates that no workout logged ]=====
+		if len(self.subroutines) == 0 and not self.curr_subroutine:
+			return False
+
 		self.subroutines.append(self.curr_subroutine)
 		self.curr_subroutine = None
 
 		self.end_time = datetime.datetime.now()
+
+		return True 
 
 	def get_curr_subroutine(self):
 		return self.curr_subroutine
@@ -53,6 +60,7 @@ class Workout:
 		
 		if subroutine:
 			self.subroutines.append(subroutine)
+
 
 	def add_set(self, xset):
 		self.curr_subroutine.add_set(xset)
@@ -161,17 +169,19 @@ class Workout:
 
 		#=====[ normalize values ]=====
 		values = muscles.values()
-		values = [int(100*val/sum(values)) for val in values]
 		labels = muscles.keys()
+		indices = np.asarray(values).argsort()[::-1][:index]
 
-		indices = np.asarray(values).argsort()[:index]
+		labels = [labels[idx] for idx in indices]
+		values = [values[idx] for idx in indices]
+		values = [int(100*val/sum(values)) for val in values]
 
 		#=====[ Build summary string ]=====		
 		summary = 'You worked out the following muscles:\n\n'
 
-		for idx in indices[::-1]:
+		for idx, label in enumerate(labels):
 
-			summary += labels[idx] + ': ' + str(values[idx]) + ' %\n'
+			summary += label + ': ' + str(values[idx]) + ' %\n'
 
 		return summary
 

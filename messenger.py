@@ -33,7 +33,8 @@ import workout_log
 import feedback
 import command 
 import utils as ut
-from database import users 
+from database import users
+from resources import *
 
 
 #=====[ Access token ]=====
@@ -108,22 +109,30 @@ def respond(message, user):
 		Step 3: send appropriate response 
 	"""
 
-	status = user.status
+	try:
 
-	if command.process(user, message):
-		return
+		status = user.status
 
-	if status == "intro":
-		intro.process(user, message)
+		if command.process(user, message):
+			return
 
-	elif status == "idle":
-		idle.process(user, message)
+		if status == "intro":
+			intro.process(user, message)
 
-	elif status == "workout":
-		workout_log.process(user, message)
+		elif status == "idle":
+			idle.process(user, message)
 
-	elif status == "feedback":
-		feedback.process(user, message)
+		elif status == "workout":
+			workout_log.process(user, message)
+
+		elif status == "feedback":
+			feedback.process(user, message)
+
+
+	#=====[ If error caught, send user an error message and keep in same state ]=====
+	except Exception as e:
+		print e
+		ut.send_response(ERROR_MESSAGE, user_id)
 
 
 #=====[ Runs app on running server.py ]=====

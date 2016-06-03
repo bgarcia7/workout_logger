@@ -13,8 +13,6 @@ def set(user, user_id, text):
 	muscle_groups = defaultdict(list)
 
 	text_muscles = [x.strip() for x in re.split(',|and',text) if x.strip()]
-
-	print text_muscles
 	
 	#=====[ Check to see if each item in text matches against a muscle group ]=====
 	for muscle in text_muscles:
@@ -43,7 +41,6 @@ def review(user, user_id, days=7, num_muscles=7):
 	""" Provides feedback on muscles targeted over the past week """
 
 	#=====[ Get muscle groups and target muscle groups ]=====
-	print 'in review goals'
 	values, labels = user.get_muscle_groups(days, num_muscles, False)
 	target_muscles = user.goals
 

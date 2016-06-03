@@ -1,6 +1,7 @@
 import datetime 
 from collections import Counter, OrderedDict
 from fuzzywuzzy import fuzz
+import numpy as np
 
 class User:
 

@@ -79,12 +79,10 @@ def process_message(message_obj):
 
 	"""
 
-	print 'in process message'
 	user_id, timestamp, message = ut.extract_obj_info(message_obj)
 
 	#=====[ Find user in db ]=====
 	user = users.find_one({"user_id": user_id})
-	print 'after looking for users'
 	#=====[ Add message to existing user database or add new user ]=====
 	if not user:
 
@@ -97,7 +95,6 @@ def process_message(message_obj):
 		
 	#=====[ Store message in user object ]=====
 	user.add_message(message)
-	print 'after adding message'
 	#=====[ Formulates and sends response ]=====
 	respond(message, user)
 
@@ -112,10 +109,8 @@ def respond(message, user):
 
 	status = user.status
 
-	print 'before command'
 	if command.process(user, message):
 		return
-	print 'after command'
 
 	if status == "intro":
 		intro.process(user, message)

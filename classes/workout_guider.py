@@ -33,12 +33,9 @@ class WorkoutGuider():
 			Returns bool representing successful parse and whether we should move on to next set
 
 		"""
-		print 'Were in process!'
 
 		#=====[ If user has not started workout ]=====
-		print self.state
 		if self.state == NOT_STARTED:
-			print "NOT STARTED"
 			if 'yes' in text:
 
 				self.state = IN_WORKOUT
@@ -52,7 +49,6 @@ class WorkoutGuider():
 
 		#=====[ If in workout, log state ]=====
 		elif self.state == IN_WORKOUT:
-			print "IN WORKOUT"
 			sub_state, set_state = self.workout_state
 
 			user_set = ut.extract_exercise(text)
@@ -108,7 +104,5 @@ class WorkoutGuider():
 
 		ut.send_response(response, user_id)
 
-		
-		print self.workout_state
 		return self.workout_state
 

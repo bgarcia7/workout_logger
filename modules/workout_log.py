@@ -44,22 +44,6 @@ def process(user, message):
 
 	#=====[ End Workout ]=====
 	if "end" in text and "workout" in text:
-
-		#=====[ Record current workout and end time. Update user ]=====
-		workout.end()
-
-		ut.send_response(END_WORKOUT_MESSAGE, user_id)
-
-		#=====[ Send workout summary, stats, and spider chart ]=====
-		ut.send_response(workout.get_summary(), user_id)
-		ut.send_response(workout.get_stats(), user_id)
-
-		ut.send_response(workout.summarize_muscle_groups(4), user_id)
-
-		# if generate_spider(user_id, dict(workout.muscle_groups.most_common(4))):
-		# 	ut.send_response('Check out the muscles you targeted:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
-
-		#=====[ After calling get_summary and updating workout stats, save workout ]=====
 		end_user_workout(user, user_id, workout)
 
 
@@ -124,16 +108,6 @@ def process(user, message):
 		# If there is no next set, the workout guider is done and None will be returned so we should end the workout
 		if not status:
 			# TODO: This code is duplicated from above. Factor out to helper
-			#=====[ Record current workout and end time. Update user ]=====
-			workout.end()
-
-			ut.send_response(END_WORKOUT_MESSAGE, user_id)
-
-			#=====[ Send workout summary, stats, and spider chart ]=====
-			ut.send_response(workout.get_summary(), user_id)
-			ut.send_response(workout.get_stats(), user_id)
-
-			ut.send_response(workout.summarize_muscle_groups(4), user_id)
 			end_user_workout(user, user_id, workout)
 			# END TODO
 
@@ -146,6 +120,17 @@ def process(user, message):
 
 	
 def end_user_workout(user, user_id, workout):
+
+	#=====[ Record current workout and end time. Update user ]=====
+	workout.end()
+
+	ut.send_response(END_WORKOUT_MESSAGE, user_id)
+
+	#=====[ Send workout summary, stats, and spider chart ]=====
+	ut.send_response(workout.get_summary(), user_id)
+	ut.send_response(workout.get_stats(), user_id)
+
+	ut.send_response(workout.summarize_muscle_groups(4), user_id)
 
 	#=====[ Add workout to list of past workouts and put in idle mode ]=====
 	user.add_workout(workout)

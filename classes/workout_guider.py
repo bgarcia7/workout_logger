@@ -40,7 +40,6 @@ class WorkoutGuider():
 
 				self.state = IN_WORKOUT
 				self.workout_state = (0, -1)
-				self.subroutine_intro(user_id)
 				return True
 
 			else:
@@ -52,6 +51,13 @@ class WorkoutGuider():
 			sub_state, set_state = self.workout_state
 
 			user_set = ut.extract_exercise(text)
+
+			template_workout = self.template.workout
+			sub_state, set_state = self.workout_state
+
+			xsets = template_workout.subroutines[sub_state].get_flattened_sets()
+			user_set.exercise = xsets[set_state].exercise
+
 			if user_set:
 				workout_log.log_set(user_set, self.workout, user, user_id)
 				ut.send_response('Got your last set to be: ' + str(user_set), user_id)
@@ -99,6 +105,11 @@ class WorkoutGuider():
 		# set_state == 0 means we are starting a new subroutine
 		if set_state == 0:
 			self.subroutine_intro(user_id)
+
+			self.workout.add_subroutine()
+
+			next_subroutine = self.template.workout.subroutines[sub_state]
+			self.workout.new_subroutine(next_subroutine.mode, next_subroutine.exercises)
 
 		# If we are at the beginning of a cycle in a circuit
 		if subroutine_mode == "circuit" and set_state % sets_per_cycle == 0:

@@ -50,7 +50,9 @@ class Workout:
 	def add_subroutine(self, subroutine=None):
 
 		subroutine = subroutine if subroutine else self.curr_subroutine
-		self.subroutines.append(subroutine)
+		
+		if subroutine:
+			self.subroutines.append(subroutine)
 
 	def add_set(self, xset):
 		self.curr_subroutine.add_set(xset)

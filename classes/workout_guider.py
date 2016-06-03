@@ -3,6 +3,8 @@ import utils as ut
 import pickle
 from resources import *
 from workout import Workout
+sys.path.append('../')
+import workout_log
 
 NOT_STARTED = 0
 IN_WORKOUT = 1
@@ -14,8 +16,6 @@ class WorkoutGuider():
 
 		self.workout = Workout()
 		self.template = pickle.loads(templates.find_one()['template_object'])
-		print self.template.workout.get_summary()
-		print self.template.intro
 		self.state = NOT_STARTED
 		self.workout_state = None
 
@@ -23,7 +23,7 @@ class WorkoutGuider():
 		ut.send_response(START_WORKOUT, user_id)
 
 
-	def process(self, text, user_id):
+	def process(self, text, user, user_id):
 		""" 
 			Processes user input for a given state
 
@@ -57,6 +57,7 @@ class WorkoutGuider():
 
 			user_set = ut.extract_exercise(text)
 			if user_set:
+				workout_log.log_set(user_set, self.workout, user, user_id)
 				ut.send_response('Got your last set to be: ' + str(user_set), user_id)
 				return True
 			else:
@@ -87,6 +88,9 @@ class WorkoutGuider():
 
 		if sub_state >= len(self.template.workout.subroutines):
 			return None
+
+		# TODO: FOR BRANDON
+		# get_feedback - current user set, current template set, next template set (None for diff subroutine)
 
 		# Update object workout state
 		self.workout_state = (sub_state, set_state)

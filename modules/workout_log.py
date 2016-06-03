@@ -40,9 +40,7 @@ def start(user, workout_template=None):
 def process(user, message):
 
 	user_id, text, status_state = ut.get_info(user, message, state=True)
-	workout = user.current_workout
-
-	print workout
+	workout = user.current_workout if user.status_state == FREE_WORKOUT else user.workout_guider.workout
 
 	#=====[ End Workout ]=====
 	if "end" in text and "workout" in text:
@@ -96,30 +94,7 @@ def process(user, message):
 
 			#=====[ Update current workout if exercise extracted ]=====
 			if curr_set:
-
-				curr_subroutine = workout.curr_subroutine
-					
-				if curr_subroutine and (not curr_set.exercise or curr_subroutine.has_exercise(curr_set.exercise)):
-				#=====[ If we're in the middle of an existing subroutine ]=====
-
-					workout.add_set(curr_set)
-
-				#=====[ Beginning a new subroutine ]=====s
-				else:
-
-					if curr_subroutine:
-						workout.add_subroutine(curr_subroutine)
-
-					workout.new_subroutine('exercise', [curr_set.exercise], curr_set)
-
-				user.current_workout = workout
-				
-				cur_time = datetime.datetime.now()
-				seconds_passed = int((cur_time - user.time).total_seconds())
-				ut.send_response(str(seconds_passed)+ " seconds since your last log", user_id)
-
-				user.time = cur_time
-				ut.update(user_id, user)
+				log_set(curr_set, workout, user, user_id)
 
 			#=====[ If no exercise extracted, notify user ]=====
 			else:
@@ -133,19 +108,18 @@ def process(user, message):
 	########################################################################################
 
 	elif status_state == GUIDED_WORKOUT:
-		print workout
 
 		workout_guider = user.workout_guider
 
 		#=====[ Log set and move to next set in workout ]=====
-		next_set = workout_guider.process(text, user_id)
+		next_set = workout_guider.process(text, user, user_id)
 
 		# status will be None if there is no next set do
 		status = True
 
 		# process returns whether we should move on to next set
 		if next_set:
-			status = workout_guider.next_set(user_id)
+			status = workout_guider.next_set(user_id) if next_set else True
 
 		# If there is no next set, the workout guider is done and None will be returned so we should end the workout
 		if not status:
@@ -178,4 +152,29 @@ def end_user_workout(user, user_id, workout):
 	user.current_workout = None
 	user.status = "idle"
 	
+	ut.update(user_id, user)
+
+def log_set(curr_set, workout, user, user_id):
+	curr_subroutine = workout.curr_subroutine
+					
+	if curr_subroutine and (not curr_set.exercise or curr_subroutine.has_exercise(curr_set.exercise)):
+	#=====[ If we're in the middle of an existing subroutine ]=====
+
+		workout.add_set(curr_set)
+
+	#=====[ Beginning a new subroutine ]=====s
+	else:
+
+		if curr_subroutine:
+			workout.add_subroutine(curr_subroutine)
+
+		workout.new_subroutine('exercise', [curr_set.exercise], curr_set)
+
+	user.current_workout = workout
+	
+	cur_time = datetime.datetime.now()
+	seconds_passed = int((cur_time - user.time).total_seconds())
+	ut.send_response(str(seconds_passed)+ " seconds since your last log", user_id)
+
+	user.time = cur_time
 	ut.update(user_id, user)

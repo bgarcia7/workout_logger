@@ -1,7 +1,6 @@
 import datetime 
 from collections import Counter, OrderedDict
 from fuzzywuzzy import fuzz
-import numpy as np
 
 class User:
 
@@ -11,7 +10,7 @@ class User:
 		self.workouts = []
 		self.current_workout = None
 		self.status = "intro"
-		self.stage = 0
+		self.status_state = 0
 
 
 	def add_message(self, message):
@@ -115,6 +114,7 @@ class User:
 			summary += label + ': ' + str(values[idx]) + ' %\n'
 
 		return summary
+
 
 	def query_exercise(self, query, workout_limit=1):
 		""" Returns an ordered dict where the keys are dates of workouts and the values are lists of sets of exercises that match the query """

@@ -25,11 +25,12 @@ def process(user, message):
 	#On feedback question
 	if user.state == 0:
 
-		if "yes" in text.lower() or "ok" in text.lower():
+		if "yes" in text or "ok" in text:
 			ut.send_response(RATING_QUESTION, user_id)
 			user.state = 1
 
-		elif "no" in text.lower():
+		elif "no" in text:
+			ut.send_response(NO_FEEDBACK, user_id)
 			user.status = "idle"
 			user.state = 0
 

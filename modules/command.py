@@ -1,11 +1,31 @@
 import utils as ut
 import datetime 
 import goal
+import intro
 from resources import *
 import re
 # from spider import *
 
-command_list = ['list commands', 'sudo log: [suggestion]', 'list workouts','review last workout', 'review workout: [index]', 'review week']
+command_list = {'help': 'Type "help [some_command]" in order to get more information about that command. By the way, when you see brackets, it is indicating a placeholder for some command or string, but you should not actually type the brackets when you use some command',
+	'start workout':'Type "start workout" to begin logging your exercise. To learn how to log a workout, type the instruction: "how to log". Remember you can exit at any time using "exit"',
+	'how to log': 'Gives you instructions on how to log a workout.',
+	'list commands':'Using the "list commands" command will list all of your commands',
+ 	'sudo log: [suggestion]': 'Type "sudo log: [some message]" in order to give us some feedback about how we can improve the logger!',
+  	'list workouts': 'This will list all of your workouts',
+  	'review last workout': 'This will give you a summary of your most recent workout -- exercises performed, total time and volume, and muscle groups targeted',
+    'review workout: [index]': 'Type "review workout: [index]" where index is a corresponding number for a workout as seen after typing "list workouts"',
+    'review week': "This command will give you a summary of your last 7 days' worth of workouts",
+    'reset db': "This will DELETE ALL OF YOUR DATA. No questions asked. Be careful",
+    'query: [exercise]': 'Type "query: [some exercise you have previously performed]" to pull up the reps and weights you did last time. You can also just type "q: [exercise]" if you\'re lazy, like us :D',
+    'set timer': 'Type "set timer(s) [number of seconds], [number of seconds], and [number of seconds]" to set as many timers as you want. These timers will start as soon as you log an exercise. The assumption is that you do some exercise and immediately log it -- at that point, we start your rest timer.',
+    'clear timer': 'Type "clear timer(s)" in order to turn all of your timers off',
+    'set goal': 'Type "set goals: [muscle group 1], [muscle group 2], [muscle group 3]" in order to let us know that you want to target those muscles. Eventually, we\'ll actually hold you to it!',
+	'exit': 'Type "exit" to get out of any current flow. We won\'t save any workout in progress.'}
+
+command_shortcuts = {'how to log':['how to log','log'],'help':['help'],'start workout':['start workout'],'list commands':['list commands','ls'],'sudo log: [suggestion]': ['sudo log', 'log'],
+  	'list workouts': ['list workouts'], 'review last workout': ['review last workout'],'review workout: [index]': ['review workout'], 'review week': ['review week'],
+    'reset db': ['reset db'], 'query: [exercise]': ['query', 'q'], 'set timer': ['set timer', 'set timers'], 'clear timer': ['clear timer', 'clear timers'], 'set goal': ['set goal', 'set goals'],
+	'exit': ['exit']}
 
 def process(user, message):
 
@@ -18,9 +38,9 @@ def process(user, message):
 	#																					   #
 	########################################################################################
 
-	if 'list' in text and 'commands' in text:
+	if ('list' in text and 'commands' in text) or text == 'ls':
 
-		ut.send_response('Here are a list of commands:\n\n' + '\n'.join(command_list), user_id)
+		ut.send_response('Here are a list of commands:\n\n' + '\n'.join(command_list.keys()), user_id)
 
 
 	#=====[ Command used to log thoughts/improvements while using the workout logger ]=====#
@@ -121,8 +141,8 @@ def process(user, message):
 
 		# if generate_spider(user_id, dict(user.get_muscle_groups(7).most_common(index))):
 		# 	ut.send_response('Check out the muscles you targeted most:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
-
-	elif 'q:' in text:
+		
+	elif 'q:' in text or 'query:' in text:
 		exercise = text.split(':')[1].strip()
 		info = 'You queried for: %s\n\n' % exercise
 
@@ -215,7 +235,7 @@ def process(user, message):
 
 	#========================[ Command used to exit to idle mode ]=========================#
 	#																				       #
-	#	usage: " clear timer "			   			   			       					   #
+	#	usage: " exit "			   			   			       					  	 	   #
 	#																					   #
 	########################################################################################
 
@@ -224,6 +244,40 @@ def process(user, message):
 		user.status = 'idle'
 		ut.send_response(IDLE_MODE, user_id)
 		ut.update(user_id, user)
+
+	#=====================[ Command used to get help for any command ]=====================#
+	#																				       #
+	#	usage: " help [command] "			   			   			       				   #
+	#																					   #
+	########################################################################################
+
+	elif 'help' in text:
+
+		user_command = text.replace('help','').strip()
+
+		#=====[ Check if user command is in our command shortcut list. If so, send appropriate help response ]=====
+		for command in command_shortcuts:
+			
+			if user_command in command_shortcuts[command]:
+				
+				ut.send_response(command_list[command], user_id)
+				return True
+
+		#=====[ Tell user that we couldn't find specified command and send list of commands ]=====
+		ut.send_response(HELP_COMMAND, user_id)
+		ut.send_response('Here are a list of commands:\n\n' + '\n'.join(command_list.keys()), user_id)
+
+	#===================[ Command used to learn how to log a workout ]=====================#
+	#																				       #
+	#	usage: " how to log?" | "how do I log a workout? "  			       				   #
+	#																					   #
+	########################################################################################
+
+	elif 'how' in text and 'log' in text:
+
+		user.status = "intro"
+		user.status_state = 1
+		intro.process(user, message, instructions=True)
 
 	else:
 

@@ -74,7 +74,7 @@ def process(user, message):
 		clear_timers(user)
 
 		#=====[ Get exercises for circuit ]=====
-		exercises = [x.strip() for x in (text.split(':')[1]).split(',')]
+		exercises = [x.strip() for x in (text.split('circuit')[1]).replace(':','').split(',')]
 
 		#=====[ If currently in a subroutine, add to workout ]=====
 		if workout.curr_subroutine:

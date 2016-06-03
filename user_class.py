@@ -78,7 +78,7 @@ class User:
 	def get_avg_set_time(self, n):
 		return float("{0:.2f}".format(self.get_total_set_time(n) * 1.0 / self.get_num_sets(n)))
 
-	def get_muscle_groups(self, n, index):
+	def get_muscle_groups(self, n, index, summary=True):
 		""" Returns relative counts of all muscle groups worked over past n days """
 
 		workouts = self.get_workouts_from_last_n_days(n)
@@ -102,6 +102,10 @@ class User:
 		labels = [labels[idx] for idx in indices]
 		values = [values[idx] for idx in indices]
 		values = [int(100*val/sum(values)) for val in values]
+
+		#=====[ If don't want summary, return values and labels ]=====
+		if not summary:
+			return values, labels
 
 		#=====[ Build summary string ]=====		
 		summary = 'You worked out the following muscles:\n\n'

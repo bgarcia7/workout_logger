@@ -8,7 +8,7 @@ from resources import *
 import utils as ut
 import re
 
-def process(user, user_id, text):
+def set(user, user_id, text):
 
 	muscle_groups = defaultdict(list)
 
@@ -35,6 +35,94 @@ def process(user, user_id, text):
 	user.goals = muscle_groups
 	ut.update(user_id, user)
 	ut.send_response(UPDATED_GOALS + ', '.join(user.goals['specific']) + ' ' + ', '.join(user.goals['group']), user_id)
+
+
+grouped_muscles = {'back':['lats', 'middle back', 'traps','lower back'], 'legs': ['adductors','quadriceps', 'calves', 'hamstrings'], 'abs':['abdominals'], 'butt':['glutes', 'abductors'], 'arms':['forearms',  'triceps', 'biceps']}
+
+def review(user, user_id, days=7, num_muscles=7):
+	""" Provides feedback on muscles targeted over the past week """
+
+	#=====[ Get muscle groups and target muscle groups ]=====
+	print 'in review goals'
+	values, labels = user.get_muscle_groups(days, num_muscles, False)
+	target_muscles = user.goals
+
+	#=====[ Initialize holders ]=====
+	summary = ''
+	not_targeted = []
+	barely_targeted = []
+	not_targeted_groups = defaultdict(list)
+	barely_targeted_groups = defaultdict(list)
+
+	#=====[ Get indices of muscles that have been heavily focused on ]=====
+	focus_idxs = [idx for idx, val in enumerate(values) if val > 30]
+
+	if focus_idxs:
+		ut.send_response("You've focused heavily on " + ', '.join([labels[idx] for idx in focus_idxs]), user_id)
+
+	#=====[ Check to see if each specific target muscle has been worked out and, if it has, to what degree ]=====
+	for muscle in target_muscles['specific']:
+		if muscle not in labels:
+
+			not_targeted.append(muscle)
+
+		else:
+			
+			idx = labels.index(muscle)
+			
+			if values[idx] < 10:
+				barely_targeted.append(muscle)
+
+	#=====[ Check to see which (if any) specific target muscles within specified larger muscle groups have been worked out, 
+	#=====[ and, if they have, to what degree 
+	for muscle_group in target_muscles['group']:
+
+		for muscle in grouped_muscles[muscle_group]:
+
+			if muscle not in labels:
+
+				not_targeted_groups[muscle_group].append(muscle)
+
+			else:
+				
+				idx = labels.index(muscle)
+				
+				if values[idx] < 10:
+					barely_targeted_groups[muscle_group].append(muscle)
+
+	#=====[ Formulate muscle review message for specific muscles ]=====
+	message = ''
+	
+	for muscle in not_targeted:
+
+		message += 'You have not targeted ' + ', '.join(not_targeted) + ' at all. '
+
+	for muscle in barely_targeted:
+
+		message += 'You have not focused much on ' + ', '.join(barely_targeted) + '. '
+
+	#=====[ Send update for specific muscles ]=====
+	if message:
+		ut.send_response(message, user_id)
+
+	message = ''
+
+	#=====[ Formulate muscle review message for muscle groups ]=====
+	for muscle_group in not_targeted_groups:
+
+		message += "You wanted to focus on " + muscle_group + ", but you have not targeted " + ', '.join(not_targeted_groups[muscle_group]) + '. '
+
+	for muscle_group in barely_targeted_groups:
+
+		message += "For " + muscle_group + ", you've barely worked out " + ', '.join(barely_targeted_groups[muscle_group]) + '. '
+
+	if message: 
+		ut.send_response(message, user_id)
+	
+
+
+
+
 
 
 

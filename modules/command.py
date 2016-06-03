@@ -112,13 +112,15 @@ def process(user, message):
 
 		ut.send_response(info, user_id)
 
-		ut.send_response(user.get_muscle_groups(20, 7), user_id)
+		ut.send_response(user.get_muscle_groups(7, 7), user_id)
+		
+		if hasattr(user, 'goals'):
+			goal.review(user, user_id, 7, 7)
 
 		# index = 6 if len(workout.muscle_groups) > 5 else len(workout.muscle_groups)
 
 		# if generate_spider(user_id, dict(user.get_muscle_groups(7).most_common(index))):
 		# 	ut.send_response('Check out the muscles you targeted most:\nfile:///Users/Brandon/Desktop/Projects/workout_logger/spider.png', user_id)
-
 
 	elif 'q:' in text:
 		exercise = text.split(':')[1].strip()
@@ -164,7 +166,7 @@ def process(user, message):
 			ut.send_response(SET_GOALS, user_id)
 
 		#=====[ set goals for user ]=====
-		goal.process(user, user_id, muscle_groups[1])
+		goal.set(user, user_id, muscle_groups[1])
 
 	#================[ Command used set timers at specified intervals ]====================#
 	#																				       #

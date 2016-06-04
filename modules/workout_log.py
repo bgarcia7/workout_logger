@@ -6,6 +6,7 @@ import re
 import pickle
 import sys
 sys.path.append('classes/')
+sys.path.append('modules/')
 from workout import Workout
 from subroutine import Subroutine
 from xset import xSet
@@ -13,6 +14,7 @@ from workout_guider import WorkoutGuider
 from multiprocessing import Process
 import os
 import signal
+import feedback
 # from spider import *
 
 GUIDED_WORKOUT = 1
@@ -39,6 +41,7 @@ def start(user, workout_template=None):
 		ut.send_response(START_WORKOUT_MESSAGE, user_id)
 
 	ut.update(user_id, user)
+
 
 
 def process(user, message):
@@ -134,12 +137,14 @@ def process(user, message):
 	
 def end_user_workout(user, user_id, workout):
 
+	print 'in end workout'
 	#=====[ Clear process timers to remind user to start next set ]=====
 	clear_timers(user)
 
 	#=====[ Record current workout and end time. Update user ]=====
 	if workout.end():
 
+		print 'in in workout end loop'
 		ut.send_response(END_WORKOUT_MESSAGE, user_id)
 
 		#=====[ Send workout summary, stats, and spider chart ]=====
@@ -147,7 +152,7 @@ def end_user_workout(user, user_id, workout):
 		ut.send_response(workout.get_stats(), user_id)
 
 		ut.send_response(workout.summarize_muscle_groups(4), user_id)
-
+		print 'before adding workout'
 		#=====[ Add workout to list of past workouts and put in idle mode ]=====
 		user.add_workout(workout)
 

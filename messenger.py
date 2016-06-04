@@ -111,8 +111,9 @@ def respond(message, user):
 
 	try:
 
-		status = user.status
 
+		status = user.status
+		print 'status: ', status
 		if command.process(user, message):
 			return
 
@@ -123,9 +124,11 @@ def respond(message, user):
 			idle.process(user, message)
 
 		elif status == "workout":
+			print 'before workout log'
 			workout_log.process(user, message)
 
 		elif status == "feedback":
+
 			feedback.process(user, message)
 
 

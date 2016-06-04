@@ -73,17 +73,18 @@ class Workout:
 		#=====[ iterate through each subroutine ]=====
 		for subroutine in self.subroutines:
 
-			#=====[ Iterate through exercise in each subroutine ]=====
-			for ex in subroutine.exercises:
+			if subroutine:
+				#=====[ Iterate through exercise in each subroutine ]=====
+				for ex in subroutine.exercises:
 
-				workout_summary += str(ex) + ': \n'
+					workout_summary += str(ex) + ': \n'
 
-				#=====[ Iterate through each set ]=====
-				for xset in subroutine.sets[ex]:
+					#=====[ Iterate through each set ]=====
+					for xset in subroutine.sets[ex]:
 
-					workout_summary += str(xset) + '\n'
+						workout_summary += str(xset) + '\n'
 
-				workout_summary += '\n'
+					workout_summary += '\n'
 
 		return workout_summary 
 
@@ -121,7 +122,7 @@ class Workout:
 		total_volume = 0
 
 		for subroutine in self.subroutines:
-			total_volume += subroutine.get_volume()
+			total_volume += subroutine.get_volume() if subroutine else 0
 
 		self.volume = total_volume
 
@@ -135,7 +136,7 @@ class Workout:
 		total_sets = 0
 
 		for subroutine in self.subroutines:
-			total_sets += subroutine.get_num_sets()
+			total_sets += subroutine.get_num_sets() if subroutine else 0
 
 		self.num_sets = total_sets
 
@@ -153,8 +154,9 @@ class Workout:
 
 		#=====[ Accumulate muscle groups from each subroutine ]=====
 		for subroutine in self.subroutines:
-			subroutine.aggregate_muscle_groups()
-			counts.update(subroutine.muscle_groups)
+			if subroutine: 
+				subroutine.aggregate_muscle_groups()
+				counts.update(subroutine.muscle_groups)
 
 		self.muscle_groups = counts
 

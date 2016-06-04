@@ -18,6 +18,7 @@ class WorkoutGuider():
 		self.template = pickle.loads(templates.find_one()['template_object'])
 		self.state = NOT_STARTED
 		self.workout_state = None
+		self.prev_user_set = None
 
 		ut.send_response(self.template.intro, user_id)
 		ut.send_response(START_WORKOUT, user_id)
@@ -59,8 +60,12 @@ class WorkoutGuider():
 			user_set.exercise = xsets[set_state].exercise
 
 			if user_set:
+				#=====[ Log set and give feedback ]=====
 				workout_log.log_set(user_set, self.workout, user, user_id)
 				ut.send_response('Got your last set to be: ' + str(user_set), user_id)
+
+				self.prev_user_set = user_set
+				self.cur_set_feedback(user_set, xsets[set_state], user_id)
 				return True
 			else:
 				ut.send_response('Exercise not recognized, please retry', user_id)
@@ -133,7 +138,87 @@ class WorkoutGuider():
 
 		response += xset.exercise + ' ' + str(xset) + "\n"
 
+		#=====[ Give feedback for up and coming set ]=====
+		if self.prev_user_set:
+			self.next_set_feedback(self.prev_user_set, xset, user_id)
+
 		ut.send_response(response, user_id)
 
 		return self.workout_state
+
+
+	def cur_set_feedback(self, user_set, cur_set, user_id):
+		""" Analyzes a user's current set and gives feedback """
+
+		print 'in feedback'
+
+		print 'cur set: ',cur_set.reps, 'type:', type(cur_set.reps)
+		print 'user set: ',user_set.reps, 'type: ', type(user_set.reps)
+			
+		#=====[ Check to see if we're giving feedback on a body weight set ]=====
+		if cur_set.weight == None and user_set.weight == None:
+
+			#=====[ If user did more sets than required ]=====
+			if int(user_set.reps) > int(cur_set.reps):
+
+				ut.send_response(GOOD_REPS_NO_WEIGHT, user_id)
+
+		else:
+
+			rep_percentage = float(user_set.reps)/float(cur_set.reps)
+
+			if int(user_set.reps) < int(cur_set.reps):
+
+				#=====[ Feedback on not doing enough reps on current set ]=====
+				if rep_percentage:
+					ut.send_response(DID_TOO_MUCH_WEIGHT + "{0:.2f}".format(rep_percentage) + "% of your reps", user_id)
+				
+				elif int(user_set.reps) != int(cur_set.reps) - 1:
+					ut.send_response(DID_A_BIT_TOO_MUCH_WEIGHT, user_id)
+
+
+			if int(user_set.reps) > int(cur_set.reps):
+
+				#=====[ Feedback on doing too many reps on current set ]=====
+				if rep_percentage > 1.3:
+					ut.send_response(DID_NOT_DO_ENOUGH_WEIGHT + "{0:.2f}".format(1-rep_percentage) + "%", user_id)
+				
+				elif int(user_set.reps) != int(cur_set.reps) + 1:
+					ut.send_response(DID_A_BIT_TOO_LIGHT, user_id)
+
+
+		
+	def next_set_feedback(self, user_set, next_set, user_id):
+		""" Analyzes a user's current set and gives feedback for next set """
+
+		print 'next set: ',next_set.reps, 'type:', type(next_set.reps)
+		print 'user set: ',user_set.reps, 'type: ', type(user_set.reps)
+
+		if next_set.weight:
+
+			#=====[ Give feedback on weight for next set ]=====
+			if int(user_set.reps) < int(next_set.reps) - 1:
+
+				ut.send_response(REDUCE_WEIGHT, user_id)
+
+			elif int(user_set.reps) > int(next_set.reps) + 1:
+
+				ut.send_response(INCREASE_WEIGHT, user_id)
+
+			else:
+
+				ut.send_response(KEEP_WEIGHT, user_id)
+
+		else:
+
+			if int(user_set.reps) < int(next_set.reps):
+
+				ut.send_response(MORE_REPS_NO_WEIGHT_NEXT_SET, user_id)
+
+
+
+
+
+
+
 

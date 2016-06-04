@@ -53,13 +53,14 @@ class WorkoutGuider():
 
 			user_set = ut.extract_exercise(text)
 
-			template_workout = self.template.workout
-			sub_state, set_state = self.workout_state
-
-			xsets = template_workout.subroutines[sub_state].get_flattened_sets()
-			user_set.exercise = xsets[set_state].exercise
-
 			if user_set:
+
+				template_workout = self.template.workout
+				sub_state, set_state = self.workout_state
+
+				xsets = template_workout.subroutines[sub_state].get_flattened_sets()
+				user_set.exercise = xsets[set_state].exercise
+
 				#=====[ Log set and give feedback ]=====
 				workout_log.log_set(user_set, self.workout, user, user_id)
 				ut.send_response('Got your last set to be: ' + str(user_set), user_id)
@@ -171,7 +172,7 @@ class WorkoutGuider():
 
 				#=====[ Feedback on not doing enough reps on current set ]=====
 				if rep_percentage:
-					ut.send_response(DID_TOO_MUCH_WEIGHT + "{0:.2f}".format(rep_percentage) + "% of your reps", user_id)
+					ut.send_response(DID_TOO_MUCH_WEIGHT + str(int(rep_percentage*100)) + "% of your reps", user_id)
 				
 				elif int(user_set.reps) != int(cur_set.reps) - 1:
 					ut.send_response(DID_A_BIT_TOO_MUCH_WEIGHT, user_id)
@@ -181,7 +182,7 @@ class WorkoutGuider():
 
 				#=====[ Feedback on doing too many reps on current set ]=====
 				if rep_percentage > 1.3:
-					ut.send_response(DID_NOT_DO_ENOUGH_WEIGHT + "{0:.2f}".format(1-rep_percentage) + "%", user_id)
+					ut.send_response(DID_NOT_DO_ENOUGH_WEIGHT + str(int((rep_percentage-1)*100)) + "%", user_id)
 				
 				elif int(user_set.reps) != int(cur_set.reps) + 1:
 					ut.send_response(DID_A_BIT_TOO_LIGHT, user_id)
@@ -213,7 +214,7 @@ class WorkoutGuider():
 
 			if int(user_set.reps) < int(next_set.reps):
 
-				ut.send_response(MORE_REPS_NO_WEIGHT_NEXT_SET, user_id)
+				ut.send_response(MORE_REPS_NO_WEIGHT, user_id)
 
 
 

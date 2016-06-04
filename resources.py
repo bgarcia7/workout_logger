@@ -69,6 +69,15 @@ QUESTION_END = "Got it, thanks!"
 
 #=====[ Workout Guidance Messages ]=====
 START_WORKOUT = "Do you want to get started?"
+MORE_REPS_NO_WEIGHT = "Try to push yourself and get a few more reps this time!"
+GOOD_REPS_NO_WEIGHT = "Good energy! Keep it up!"
+DID_TOO_MUCH_WEIGHT = "You did too much weight this last set. You only got "
+DID_A_BIT_TOO_MUCH_WEIGHT = "Close to hitting your reps! Pump out a couple more next time!"
+DID_NOT_DO_ENOUGH_WEIGHT =  "Increase your weight to hit your target rep count. You did an extra "
+DID_A_BIT_TOO_LIGHT = "Close to getting your desired rep range. You went a tiny bit too light."
+REDUCE_WEIGHT = "Reduce your weight for this next set."
+INCREASE_WEIGHT = "Increse your weight for this next set."
+KEEP_WEIGHT = "The weight you're at is good for this next set."
 
 months = ['Jan','Feb','Mar','April','May','June','July','Aug','Sep','Oct','Nov','Dec']
 

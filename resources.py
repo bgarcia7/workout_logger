@@ -2,10 +2,36 @@ import sys
 sys.path.append('modules/')
 
 from muscle_classifier import MuscleClassifier
-from muscle_detector import grouped_muscles
+
+grouped_muscles = {'back':['lats', 'middle back', 'traps','lower back'], 'legs': ['adductors','quadriceps', 'calves', 'hamstrings'], 'abs':['abdominals'], 'butt':['glutes', 'abductors'], 'arms':['forearms',  'triceps', 'biceps']}
+
+#=====[ Key words ]=====
+greetings = ['yo','hi','hello']
+yes_words = ['yes', 'yah', 'sure', 'yup', 'ok', 'o.k.']
+no_words = ['no', 'nope','nah','later']
+
+#=====[ Muscle information ]=====
+muscles = ['lats', 'chest', 'quadriceps', 'biceps', 'middle back', 'traps', 'shoulders', 'calves', 'abdominals', 'glutes', 'forearms', 'lower back', 'triceps', 'hamstrings', 'abductors', 'adductors', 'neck']
+grouped_muscles = {'back':['lats', 'middle back', 'traps','lower back'], 'legs': ['adductors','quadriceps', 'calves', 'hamstrings'], 'abs':['abdominals'], 'butt':['glutes', 'abductors'], 'arms':['forearms',  'triceps', 'biceps']}
+
+#=====[ Date information ]=====
+months = ['Jan','Feb','Mar','April','May','June','July','Aug','Sep','Oct','Nov','Dec']
+
+#=====[ Classifier ]=====
+model = MuscleClassifier()
 
 #=====[ Standard messages ]=====
-WELCOME_MESSAGE = "Start a workout / end a workout. Just text me."
+GREETING = "Hey there!"
+WELCOME_MESSAGE = "Hey there! I'm here to help you log and optimize your workouts. At any point, you can review a list commands by saying 'list commands' or 'ls'. Learn more about any command using 'help [command]'." 
+COMMAND_INTRO = "For example, if you want to learn how to log a workout, just ask me 'How do I log a workout?' (or something along those lines). Some other things you can do include setting goals for working out certain muscles, setting timers in between each of your sets, reviewing your workouts (in terms of sets, volume, and muscle groups targeted)"
+WORKOUT_INTRO = "Do you want to learn about how to log a workout?"
+DEFAULT_IDLE_MESSAGE = "That's interesting... just let me know when you're starting your workout. I'll be ready. You can type 'ls' to see all commands."
+IDLE_MODE = "Back in idle mode. Waiting on you, boss"
+ERROR_MESSAGE = "I had trouble processing that. Let's try again? If that doesn't work, try just typing 'exit' to go back in to idle mode."
+NO_PROBLEM = 'No problem!'
+INSPIRATIONAL = ["Remember, what get's measured gets grown!", "It's not where you start but where you end up!", "It's all about the delta.", "You the best."]
+
+#=====[ Workout logging messages ]=====
 START_WORKOUT_MESSAGE = "Let's go baby, no pain = no gain. Record after each exercise."
 DEFAULT_IDLE_MESSAGE = "That's interesting... just let me know when you're starting your workout. I'll be ready."
 END_WORKOUT_MESSAGE = "Nice! Good workout!"

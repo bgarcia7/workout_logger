@@ -3,6 +3,7 @@ import datetime
 import goal
 from resources import *
 import re
+import numpy as np
 # from spider import *
 
 command_list = ['list commands', 'sudo log: [suggestion]', 'list workouts','review last workout', 'review workout: [index]', 'review week']
@@ -222,6 +223,56 @@ def process(user, message):
 		user.status = 'idle'
 		ut.send_response(IDLE_MODE, user_id)
 		ut.update(user_id, user)
+
+	#=====================[ Command used to get help for any command ]=====================#
+	#																				       #
+	#	usage: " help [command] "			   			   			       				   #
+	#																					   #
+	########################################################################################
+
+	elif 'help' in text:
+
+		user_command = text.replace('help','').strip()
+
+		#=====[ Check if user command is in our command shortcut list. If so, send appropriate help response ]=====
+		for command in command_shortcuts:
+			
+			if user_command in command_shortcuts[command]:
+				
+				ut.send_response(command_list[command], user_id)
+				return True
+
+		#=====[ Tell user that we couldn't find specified command and send list of commands ]=====
+		ut.send_response(HELP_COMMAND, user_id)
+		ut.send_response('Here are a list of commands:\n\n' + '\n'.join(command_list.keys()), user_id)
+
+	#===================[ Command used to learn how to log a workout ]=====================#
+	#																				       #
+	#	usage: " how to log?" | "how do I log a workout? "  			       				   #
+	#																					   #
+	########################################################################################
+
+	elif 'how' in text and 'log' in text:
+
+		user.status = "intro"
+		user.status_state = 1
+		intro.process(user, message, instructions=True)
+
+	#==========================[ Command used to greet user ]==============================#
+	#																				       #
+	#	usage: Greet Tony: 'Hi'  			       			   							   #
+	#																					   #
+	########################################################################################
+	
+	elif text in greetings:
+
+		ut.send_response(GREETING, user_id)
+
+	elif 'thank' in text:
+
+		ut.send_response(NO_PROBLEM, user_id)
+		ut.send_response(np.random.choice(INSPIRATIONAL),user_id)
+
 
 	else:
 

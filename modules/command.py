@@ -4,6 +4,7 @@ import goal
 import intro
 from resources import *
 import re
+import numpy as np
 # from spider import *
 
 command_list = {'help': 'Type "help [some_command]" in order to get more information about that command. By the way, when you see brackets, it is indicating a placeholder for some command or string, but you should not actually type the brackets when you use some command',
@@ -277,6 +278,21 @@ def process(user, message):
 		user.status = "intro"
 		user.status_state = 1
 		intro.process(user, message, instructions=True)
+
+	#==========================[ Command used to greet user ]==============================#
+	#																				       #
+	#	usage: Greet Tony: 'Hi'  			       			   							   #
+	#																					   #
+	########################################################################################
+	
+	elif text in greetings:
+
+		ut.send_response(GREETING, user_id)
+
+	elif 'thank' in text:
+
+		ut.send_response(NO_PROBLEM, user_id)
+		ut.send_response(np.random.choice(INSPIRATIONAL),user_id)
 
 	else:
 

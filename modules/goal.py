@@ -31,8 +31,16 @@ def set(user, user_id, text):
 			
 	#=====[ Update user object ]=====            
 	user.goals = muscle_groups
+	for key in user.goals.keys():
+		print key
+		for key2 in user.goals[key]:
+			print key2
 	ut.update(user_id, user)
-	ut.send_response(UPDATED_GOALS + ', '.join(user.goals['specific']) + ' ' + ', '.join(user.goals['group']), user_id)
+	
+	message = UPDATED_GOALS + ', '.join(user.goals['specific'])
+	message += ', ' + ', '.join(user.goals['group']) if user.goals['group'] else ''
+
+	ut.send_response(message, user_id)
 
 
 grouped_muscles = {'back':['lats', 'middle back', 'traps','lower back'], 'legs': ['adductors','quadriceps', 'calves', 'hamstrings'], 'abs':['abdominals'], 'butt':['glutes', 'abductors'], 'arms':['forearms',  'triceps', 'biceps']}

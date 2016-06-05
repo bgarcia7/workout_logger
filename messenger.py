@@ -42,7 +42,7 @@ token = 'EAAYWALshr2kBAIVdPVwKscuFZAGjdB2dJzFx1qd8JA3bMnDTaZCr0fH0avAlPfLv72yBFE
 kelvin_token = 'EAAak1FpgZAygBAFkr1NOD2DJUwL4r3j74VScIDCMmW4bpBvfnoQi1VmS1KvZCFM0yooJ7Sisg8IUcioQReVAFt25RwberE8olwX8Vsre412IaNdc07fV4GDYIS4bsil4dJmRtp2r6nud8I8SeOGB8R6IO1I8E1td8QljAQNwZDZD'
 test_token = 'EAAYjxWLX4AUBAG8W5qtCZBhmaNulNn2CtlsFP4ppNZCgiygOrafREWsLFDWZChDQ27fUMs7jpKyt5I56n8Q76ESlORNnOjYYZCIOAZCp5sHhZBIBkZCDeZBi5Yr1uiLNVlZB1WxfYx1vz8ZC9x9WYAelh4vQnz2rZCZAB9EkX5eBoFoRpAZDZD'
 
-os.system('curl -ik -X POST "https://graph.facebook.com/v2.6/me/subscribed_apps?access_token=' + test_token + '"')
+os.system('curl -ik -X POST "https://graph.facebook.com/v2.6/me/subscribed_apps?access_token=' +token + '"')
 
 #=====[ Set up Redis server ]=====
 redis_conn = redis.StrictRedis(host='localhost', port=6379)

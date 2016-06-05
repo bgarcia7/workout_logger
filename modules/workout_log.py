@@ -48,7 +48,9 @@ def process(user, message):
 
 	user_id, text, status_state = ut.get_info(user, message, state=True)
 	workout = user.current_workout if user.status_state == FREE_WORKOUT else user.workout_guider.workout
+	clear_timers(user)
 
+	print 'in workout_log process'
 	#=====[ End Workout ]=====
 	if "end" in text and "workout" in text:
 		
@@ -63,11 +65,23 @@ def process(user, message):
 
 	elif status_state == FREE_WORKOUT:
 
-		#=====[ If starting a new circuit ]=====
-		if "circuit" in text:
+		#=====[ If user is moving on to next exercise ]=====
+		if ('done' in text or 'end' in text) and ('exercise' in text or 'circuit' in text):
 
-			#=====[ Clear process timers to remind user to start next set ]=====
-			clear_timers(user)
+			workout.add_subroutine(workout.curr_subroutine)
+
+			total_seconds = workout.curr_subroutine.get_total_set_time()
+			time = str(int(total_seconds/60)) + ' min ' + str(total_seconds % 60) + ' sec' if total_seconds > 60 else str(total_seconds) + ' sec'
+
+			#=====[ Notify user of duration of previous subroutine ]=====
+			ut.send_response('Your ' + ', '.join(workout.curr_subroutine.exercises) + ' exercise took you a total of ' + time, user_id)
+
+			workout.curr_subroutine = None
+
+			ut.update(user_id, user)
+
+		#=====[ If starting a new circuit ]=====
+		elif "circuit" in text:
 
 			#=====[ Get exercises for circuit ]=====
 			exercises = [x.strip() for x in (text.split(':')[1]).split(',')]
@@ -75,13 +89,6 @@ def process(user, message):
 			#=====[ If currently in a subroutine, add to workout ]=====
 			if workout.curr_subroutine:
 				workout.add_subroutine(workout.curr_subroutine)
-
-				total_seconds = workout.curr_subroutine.get_total_set_time()
-				time = str(int(total_seconds/60)) + ' min ' + str(total_seconds % 60) + ' sec' if total_seconds > 60 else str(total_seconds) + ' sec'
-
-				#=====[ Notify user of duration of previous subroutine ]=====
-				ut.send_response('Your ' + ', '.join(workout.curr_subroutine.exercises) + ' exercise took you a total of ' + time, user_id)
-
 
 			#=====[ Making new subroutine in workout ]=====
 			workout.new_subroutine('circuit', exercises)
@@ -114,21 +121,26 @@ def process(user, message):
 		workout_guider = user.workout_guider
 
 		#=====[ Log set and move to next set in workout ]=====
-		next_set = workout_guider.process(text, user, user_id)
+		cur_set_feedback_message, next_set = workout_guider.process(text, user, user_id)
 
-		# status will be None if there is no next set do
-		status = True
+		next_set_feedback_message = True
 
-		# process returns whether we should move on to next set
+		#=====[ If there is feedback for the current set, then we were able to successfully extract a log and we move 
+		#=====[ on to the next set
+		end_subroutine = False
 		if next_set:
-			status = workout_guider.next_set(user_id) if next_set else True
+			next_set_feedback_message, end_subroutine = workout_guider.next_set(user_id)
 
-		# If there is no next set, the workout guider is done and None will be returned so we should end the workout
-		if not status:
-			# TODO: This code is duplicated from above. Factor out to helper
+		#=====[ If there is not feedback for the next set, then that means there are no more sets to perform, and we
+		#=====[ end the workout ]=====
+		if not next_set_feedback_message:
 			end_user_workout(user, user_id, workout)
-			# END TODO
 			workout_guider = None
+
+		elif not end_subroutine:
+			message = cur_set_feedback_message.strip()if type(cur_set_feedback_message) == str else ''
+			message += ' ' + next_set_feedback_message.strip() if type(next_set_feedback_message) == str else ''
+			ut.send_response(message, user_id)
 
 		user.workout_guider = workout_guider
 		ut.update(user_id, user)
@@ -144,7 +156,6 @@ def end_user_workout(user, user_id, workout):
 	#=====[ Record current workout and end time. Update user ]=====
 	if workout.end():
 
-		print 'in in workout end loop'
 		ut.send_response(END_WORKOUT_MESSAGE, user_id)
 
 		#=====[ Send workout summary, stats, and spider chart ]=====
@@ -152,7 +163,6 @@ def end_user_workout(user, user_id, workout):
 		ut.send_response(workout.get_stats(), user_id)
 
 		ut.send_response(workout.summarize_muscle_groups(4), user_id)
-		print 'before adding workout'
 		#=====[ Add workout to list of past workouts and put in idle mode ]=====
 		user.add_workout(workout)
 
@@ -183,11 +193,10 @@ def log_set(curr_set, workout, user, user_id):
 
 	user.current_workout = workout
 	
-	cur_time = datetime.datetime.now()
-	seconds_passed = int((cur_time - user.time).total_seconds())
-	ut.send_response(str(seconds_passed)+ " seconds since your last log", user_id)
+	
+	set_timers(user_id, user)
 
-	user.time = cur_time
+	user.time = datetime.datetime.now()
 	ut.update(user_id, user)
 
 def clear_timers(user):
@@ -196,12 +205,17 @@ def clear_timers(user):
 	#=====[ Terminate each timer ]=====
 	if hasattr(user, 'timer_processes'):
 		for pid in user.timer_processes:
-			os.kill(pid, signal.SIGTERM)
+			try:
+				os.kill(pid, signal.SIGTERM)
+			except Exception as e:
+				pass
 
 def send_warning(user_id, message, seconds):
 	""" Sends Timing warning to user for specified amount of time """
 
+	print 'in send warning'
 	time.sleep(seconds - 2)
+	print 'after sleep'
 	ut.send_response(message + str(seconds) + ' seconds.', user_id)
 
 def set_timers(user_id, user):
@@ -209,7 +223,10 @@ def set_timers(user_id, user):
 
 	if hasattr(user, 'timer'):
 		user.timer_processes = []
-		
+
+		print 'setting timer'
+
+		print user.timer
 		#=====[ Start new process for each timer ]=====
 		for idx, time in enumerate(user.timer):
 

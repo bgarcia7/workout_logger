@@ -29,7 +29,7 @@ DEFAULT_IDLE_MESSAGE = "That's interesting... just let me know when you're start
 IDLE_MODE = "Back in idle mode. Waiting on you, boss"
 ERROR_MESSAGE = "I had trouble processing that. Let's try again? If that doesn't work, try just typing 'exit' to go back in to idle mode."
 NO_PROBLEM = 'No problem!'
-INSPIRATIONAL = ["Remember, what get's measured gets grown!", "It's not where you start but where you end up!", "It's all about the delta.", "You the best."]
+INSPIRATIONAL = ["Remember, what gets measured gets grown!", "It's not where you start but where you end up!", "It's all about the delta.", "You the best."]
 
 
 #=====[ Workout logging messages ]=====
@@ -74,8 +74,8 @@ FEEDBACK_END = "Thank you! Your feedback has been recorded"
 QUESTION_END = "Got it, thanks!"
 
 #=====[ Workout Guidance Messages ]=====
-START_WORKOUT = "Do you want to get started?"
-MORE_REPS_NO_WEIGHT = "Try to push yourself and get a few more reps this time!"
+START_WORKOUT = "Do you want to get started? "
+MORE_REPS_NO_WEIGHT = "Try to push yourself and get a few more reps this time! "
 GOOD_REPS_NO_WEIGHT = "Good energy! Keep it up!"
 DID_TOO_MUCH_WEIGHT = "You did too much weight this last set. You only got "
 DID_A_BIT_TOO_MUCH_WEIGHT = "Close to hitting your reps! Pump out a couple more next time!"

@@ -56,6 +56,17 @@ def process(user, message):
 
 		ut.send_response(MESSAGE_LOGGED, user_id)
 
+	############################################################################
+	############################################################################
+	#################TODO TODO TODO TODO TODO TODO TODO#########################
+	####################IMPLEMENT LISTING WORKOUTS##############################
+	############################################################################
+
+	elif 'list' in text and 'template' in text and 'workouts' in text:
+
+		saved_workouts = '1. Chest Gains | Sets: 24\nTime: 1 hour\nMuscles: Chest, Triceps\n\n2. Ab Attack | Sets: 15\nTime: 20 minutes\nMuscles: Abs, Obliques\n\n3. Leg Day | Sets: 28\nTime: 1 hour 20 minutes\nMuscles: Quads, Hamstrings, Calves'
+		ut.send_response(saved_workouts, user_id)
+
 
 	#=========================[ Command used list recent workouts ]========================#
 	#																				       #
@@ -94,11 +105,11 @@ def process(user, message):
 	#																					   #
 	########################################################################################
 
-	elif 'review' in text and 'workout' in text and ':' in text:
+	elif 'review' in text and 'workout' in text in text:
 
 		try: 
 			
-			idx = int(text.split(':')[1].strip())
+			idx = int(ut.extract_int(text))
 			workout = user.workouts[-idx]
 
 			ut.send_response(user.workouts[-idx].get_summary(), user_id)

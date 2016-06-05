@@ -174,3 +174,19 @@ def extract_exercise(text):
 
 	#=====[ Returns xSet object constructed from extracted reps, exercise, and weight ]=====
 	return xSet(values[1], values[2], values[0], values[3])
+
+def extract_int(text):
+	
+	number = None
+
+	#=====[ regex to extract weight ]=====
+	regex = r"\d+"
+
+	if re.search(regex,text):
+
+		match = re.search(regex, text)
+
+		#=====[ Store weight ]=====
+		number = int(match.group(0))
+		
+	return number

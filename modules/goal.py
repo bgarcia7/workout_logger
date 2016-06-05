@@ -115,7 +115,7 @@ def review(user, user_id, days=7, num_muscles=7):
 	#=====[ Formulate muscle review message for muscle groups ]=====
 	for muscle_group in not_targeted_groups:
 
-		message += "You wanted to focus on " + muscle_group + ", but you have not targeted " + ', '.join(not_targeted_groups[muscle_group]) + '. '
+		message += "You wanted to focus on " + muscle_group + ", but you have not worked out " + ', '.join(not_targeted_groups[muscle_group]) + '. '
 
 	for muscle_group in barely_targeted_groups:
 

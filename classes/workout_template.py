@@ -6,6 +6,7 @@ class WorkoutTemplate():
 	def __init__(self, intro='LETS GET GOING', workout=None, time=None, author=None):
 
 		self.workout = workout
+		self.workout.timer = [45, 60]
 		self.time = None
 		self.author = author
 		self.intro = intro

@@ -20,6 +20,7 @@ class WorkoutGuider():
 		self.workout_state = None
 		self.prev_user_set = None
 
+		self.template.intro = 'Chest and Triceps'
 		ut.send_response(self.template.intro, user_id)
 		ut.send_response(START_WORKOUT, user_id)
 
@@ -39,13 +40,18 @@ class WorkoutGuider():
 		if self.state == NOT_STARTED:
 			if 'yes' in text:
 
+				#=====[ hard coding timers for now ]=====
+				self.template.workout.timer = [45, 60]
+				user.timer = self.template.workout.timer
+				ut.update(user_id, user)
+
 				self.state = IN_WORKOUT
 				self.workout_state = (0, -1)
-				return True
+				return (True, True)
 
 			else:
 				ut.send_response(START_WORKOUT,user_id)
-				return False
+				return (False, False)
 
 		#=====[ If in workout, log state ]=====
 		elif self.state == IN_WORKOUT:
@@ -66,11 +72,10 @@ class WorkoutGuider():
 				ut.send_response('Got your last set to be: ' + str(user_set), user_id)
 
 				self.prev_user_set = user_set
-				self.cur_set_feedback(user_set, xsets[set_state], user_id)
-				return True
+				return (self.cur_set_feedback(user_set, xsets[set_state], user_id), True)
 			else:
 				ut.send_response('Exercise not recognized, please retry', user_id)
-				return False
+				return (False, False)
 
 
 	def subroutine_intro(self, user_id):
@@ -137,24 +142,29 @@ class WorkoutGuider():
 		sets = self.template.workout.subroutines[sub_state].get_flattened_sets()
 		xset = sets[set_state]
 
-		response += xset.exercise + ' ' + str(xset) + "\n"
+		response += xset.exercise + ' ' + str(xset.reps) + " reps\n"
 
+		message = True
 		#=====[ Give feedback for up and coming set ]=====
 		if self.prev_user_set:
-			self.next_set_feedback(self.prev_user_set, xset, user_id)
+			message = self.next_set_feedback(self.prev_user_set, xset, user_id)
 
 		ut.send_response(response, user_id)
 
-		return self.workout_state
+		print 'message to return is:', message
+		print self.workout_state
+		print set_state
+		
+		if self.workout_state:
+			return (message, False) if set_state != 0 else (message, True)
+		else:
+			return (self.workout_state, False)
 
 
 	def cur_set_feedback(self, user_set, cur_set, user_id):
 		""" Analyzes a user's current set and gives feedback """
 
-		print 'in feedback'
-
-		print 'cur set: ',cur_set.reps, 'type:', type(cur_set.reps)
-		print 'user set: ',user_set.reps, 'type: ', type(user_set.reps)
+		message = ''
 			
 		#=====[ Check to see if we're giving feedback on a body weight set ]=====
 		if cur_set.weight == None and user_set.weight == None:
@@ -162,7 +172,7 @@ class WorkoutGuider():
 			#=====[ If user did more sets than required ]=====
 			if int(user_set.reps) > int(cur_set.reps):
 
-				ut.send_response(GOOD_REPS_NO_WEIGHT, user_id)
+				message = GOOD_REPS_NO_WEIGHT
 
 		else:
 
@@ -172,49 +182,49 @@ class WorkoutGuider():
 
 				#=====[ Feedback on not doing enough reps on current set ]=====
 				if rep_percentage:
-					ut.send_response(DID_TOO_MUCH_WEIGHT + str(int(rep_percentage*100)) + "% of your reps", user_id)
+					message  = DID_TOO_MUCH_WEIGHT + str(int(rep_percentage*100)) + "% of your reps. "
 				
 				elif int(user_set.reps) != int(cur_set.reps) - 1:
-					ut.send_response(DID_A_BIT_TOO_MUCH_WEIGHT, user_id)
+					message = DID_A_BIT_TOO_MUCH_WEIGHT
 
 
 			if int(user_set.reps) > int(cur_set.reps):
 
 				#=====[ Feedback on doing too many reps on current set ]=====
 				if rep_percentage > 1.3:
-					ut.send_response(DID_NOT_DO_ENOUGH_WEIGHT + str(int((rep_percentage-1)*100)) + "%", user_id)
+					message = DID_NOT_DO_ENOUGH_WEIGHT + str(int((rep_percentage-1)*100)) + "%. "
 				
 				elif int(user_set.reps) != int(cur_set.reps) + 1:
-					ut.send_response(DID_A_BIT_TOO_LIGHT, user_id)
+					message = DID_A_BIT_TOO_LIGHT
 
+			print 'the message is :', message
+
+		return message 
 
 		
 	def next_set_feedback(self, user_set, next_set, user_id):
 		""" Analyzes a user's current set and gives feedback for next set """
-
-		print 'next set: ',next_set.reps, 'type:', type(next_set.reps)
-		print 'user set: ',user_set.reps, 'type: ', type(user_set.reps)
 
 		if next_set.weight:
 
 			#=====[ Give feedback on weight for next set ]=====
 			if int(user_set.reps) < int(next_set.reps) - 1:
 
-				ut.send_response(REDUCE_WEIGHT, user_id)
+				return REDUCE_WEIGHT
 
 			elif int(user_set.reps) > int(next_set.reps) + 1:
 
-				ut.send_response(INCREASE_WEIGHT, user_id)
+				return INCREASE_WEIGHT
 
 			else:
 
-				ut.send_response(KEEP_WEIGHT, user_id)
+				return KEEP_WEIGHT
 
 		else:
 
 			if int(user_set.reps) < int(next_set.reps):
 
-				ut.send_response(MORE_REPS_NO_WEIGHT, user_id)
+				return MORE_REPS_NO_WEIGHT
 
 
 

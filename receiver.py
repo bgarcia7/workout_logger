@@ -14,6 +14,8 @@ import jinja2
 import os
 import sys
 
+from database import *
+
 #=====[ Sets up directories  ]=====
 base_dir = os.path.split(os.path.realpath(__file__))[0]
 static_dir = os.path.join(base_dir, 'static')

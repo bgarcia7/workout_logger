@@ -33,7 +33,7 @@ import workout_log
 import feedback
 import command 
 import utils as ut
-from database import users
+from database import *
 from resources import *
 
 

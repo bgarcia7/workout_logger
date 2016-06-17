@@ -15,7 +15,9 @@ class WorkoutGuider():
 	def __init__(self, user_id, workout_template):
 
 		self.workout = Workout()
+		print 'templates'
 		self.template = pickle.loads(templates.find_one()['template_object'])
+		print 'after templates'
 		self.state = NOT_STARTED
 		self.workout_state = None
 		self.prev_user_set = None

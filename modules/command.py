@@ -156,18 +156,21 @@ def process(user, message):
 	elif 'q:' in text or 'query:' in text:
 		exercise = text.split(':')[1].strip()
 		info = 'You queried for: %s\n\n' % exercise
-
+		print 'before query'
 		sets = user.query_exercise(exercise)
+		print 'after query'
+		if sets:
+			for date in sets:
+				workout_sets = sets[date]
 
-		for date in sets:
-			workout_sets = sets[date]
+				info += "Workout on %s:\n" % date
 
-			info += "Workout on %s:\n" % date
+				for xset in workout_sets:
+					info += "%s reps of %s @ %s\n" % (xset.reps, xset.exercise, xset.weight)
 
-			for xset in workout_sets:
-				info += "%s reps of %s @ %s\n" % (xset.reps, xset.exercise, xset.weight)
-
-		ut.send_response(info, user_id)
+			ut.send_response(info, user_id)
+		else:
+			ut.send_response("Sorry, I couldn't find any sets of " + exercise, user_id)
 
 
 	#==================[ Command used to drop a user from the database ]===================#

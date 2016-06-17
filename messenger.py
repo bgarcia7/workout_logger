@@ -106,7 +106,7 @@ def respond(message, user):
 
 	try:
 
-
+		print 'message is: ', message
 		status = user.status
 		print 'status: ', status
 		if command.process(user, message):

@@ -107,7 +107,7 @@ class User:
 
 					# Loop through the exercises in the subroutine
 					for exercise in subroutine.exercises:
-
+						print exercise
 						# If the exercise fuzzy matches the search query
 						if fuzz.ratio(query, exercise) > 80 or query in exercise or exercise in query:
 

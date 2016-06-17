@@ -122,10 +122,10 @@ class User:
 		
 		num_workouts_query_matched = 0
 		sets = OrderedDict()
-
+		print 'before workout loop'
 		# Loop over all workouts
 		for workout in self.workouts:
-
+			print 'in workout loop'
 			# Once we find enough workouts that contain the exercise queried, we can return the sets
 			if num_workouts_query_matched < workout_limit:
 
@@ -136,7 +136,7 @@ class User:
 					for exercise in subroutine.exercises:
 
 						# If the exercise fuzzy matches the search query
-						if fuzz.ratio(query, exercise) > 80 or query in exercise or exercise in query:
+						if exercise and (fuzz.ratio(query, exercise) > 80 or query in exercise or exercise in query):
 
 							workout_date = workout.start_time.date()
 

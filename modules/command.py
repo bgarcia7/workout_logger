@@ -105,7 +105,7 @@ def process(user, message):
 	#																					   #
 	########################################################################################
 
-	elif 'review' in text and 'workout' in text in text:
+	elif 'review' in text and 'workout' in text:
 
 		try: 
 			
@@ -125,6 +125,29 @@ def process(user, message):
 		except Exception as e:
 			
 			print e
+
+
+	#==================[ Command used to remove a particular workout ]=====================#
+	#																				       #
+	#	usage: " remove workout: [index] "									   			   #
+	#																					   #
+	########################################################################################
+
+	elif 'remove' in text and 'workout' in text:
+
+		try: 
+			
+			idx = int(ut.extract_int(text))
+			workout = user.workouts[-idx]
+
+			ut.send_response('Deleted workout: ' + str(workout), user_id)
+
+			del user.workouts[-idx]
+
+		except Exception as e:
+			
+			print e
+
 
 	#=============[ Command used to review a weeks worth of workout stats ]================#
 	#																				       #

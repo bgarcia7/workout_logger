@@ -50,7 +50,6 @@ def process(user, message):
 	workout = user.current_workout if user.status_state == FREE_WORKOUT else user.workout_guider.workout
 	clear_timers(user)
 
-	print 'in workout_log process'
 	#=====[ End Workout ]=====
 	if "end" in text and "workout" in text:
 		

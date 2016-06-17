@@ -144,6 +144,8 @@ def process(user, message):
 
 			del user.workouts[-idx]
 
+			ut.update(user_id, user)
+
 		except Exception as e:
 			
 			print e
